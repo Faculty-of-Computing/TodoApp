@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo App - Welcome</title>
+  <style>
+    /* Reset and base styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+main {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin: 2rem auto;
+  width: 100%;
+  max-width: 600px; /* allows wider layout */
+  box-sizing: border-box;
+}
+    h1 {
+      font-size: 4rem;
+      line-height: 1.2;
+      text-align: center;             /* Align left */
+      margin-bottom: 3rem;          /* More bottom spacing for separation */
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #333;
+    }
+
+    @media (min-width: 768px) {
+      /* h1 {
+        font-size: 4rem;
+        line-height: 1.2;
+      } */
+
+      input[type="text"] {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main role="main">
+    <h1>Todo</h1>
+    <form aria-label="Username Form">
+      <label for="username">Enter your username:</label>
+      <input type="text" id="username" name="username" placeholder="johndoe" required />
+    </form>
+  </main>
+</body>
+</html>

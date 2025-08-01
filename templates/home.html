@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo App - Welcome</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    /* Reset and base styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+main {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin: 2rem auto;
+  width: 100%;
+  max-width: 800px; /* allows wider layout */
+  box-sizing: border-box;
+}
+
+
+    h1 {
+      font-size: 4rem;
+      line-height: 1.2;
+      text-align: left;             /* Align left */
+      margin-bottom: 3rem;          /* More bottom spacing for separation */
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #333;
+    }
+
+    @media (min-width: 768px) {
+      /* h1 {
+        font-size: 4rem;
+        line-height: 1.2;
+      } */
+
+      input[type="text"] {
+        font-size: 1.1rem;
+      }
+    }
+
+    .todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    }
+
+    .todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fefefe;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .todo-item label {
+    flex: 1;
+    margin-left: 0.75rem;
+    font-weight: 500;
+    }
+
+    .timestamp {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.25rem;
+    }
+
+    .info-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #555;
+    }
+
+    .add-task-container {
+    position: relative;
+    display: inline-block;
+    margin-top: 1rem;
+    }
+
+    .add-btn {
+    font-size: 1.75rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    }
+
+    .add-btn:hover {
+    background-color: #555;
+    }
+
+    .add-label {
+    position: absolute;
+    top: 50%;
+    left: 60px;
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+    font-size: 0.95rem;
+    color: #333;
+    transition: opacity 0.3s ease;
+    }
+
+    .add-task-container:hover .add-label {
+    opacity: 1;
+    }
+
+.todo-header {
+  display: flex;
+  align-items: flex-start; /* Align everything to the top */
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+}
+
+.todo-header h1 {
+  font-size: 2.5rem;
+  flex-shrink: 0; /* don’t shrink title */
+  margin-right: auto; /* push remaining items to the right */
+}
+
+.filter-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #444;
+  flex-shrink: 0;
+}
+
+.search-bar {
+  position: relative;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.search-bar .search-icon {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #888;
+}
+
+/* Section titles */
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1.5rem 0 1rem;
+}
+
+/* Add Button with Expand-on-Hover Effect */
+.add-task-wrapper {
+  display: flex;
+  justify-content: flex-end; /* aligns the button to the right */
+  margin-top: 2rem;
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #333;
+  color: white;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: width 0.3s ease, padding 0.3s ease, background 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 48px; /* initial width for just the + */
+}
+
+.add-btn .text {
+  opacity: 0;
+  transition: opacity 0.2s ease, margin 0.3s ease;
+  margin-left: 0;
+}
+
+/* When hovered */
+.add-btn:hover {
+  width: auto;
+  padding-right: 1.5rem;
+}
+
+.add-btn:hover .text {
+  opacity: 1;
+  margin-left: 0.5rem;
+}
+
+
+/* Completed item styles */
+.todo-item.completed label {
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+.timestamp {
+  display: block;
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 0.25rem;
+}
+
+.todo-item input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #888;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  position: relative;
+  margin-right: 0.75rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.todo-item input[type="checkbox"]:checked {
+  background-color: #333;
+  border-color: #333;
+}
+
+/* Add a tick ✔ inside when checked */
+.todo-item input[type="checkbox"]:checked::after {
+  content: "✔";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  font-size: 0.75rem;
+  color: white;
+  line-height: 1;
+}
+
+  </style>
+</head>
+<body>
+  <main>
+  <header class="todo-header">
+    <h1>Todo</h1>
+    <button class="filter-btn" aria-label="Filter tasks"><i class="fa-solid fa-filter"></i></button>
+    <div class="search-bar">
+      <input type="text" placeholder="Search tasks..." />
+      <span class="search-icon"><i class="fas fa-search text-gray-500"></i></span>
+    </div>
+  </header>
+
+  <section class="pending-section">
+    <h2 class="section-title">Pending</h2>
+    <ul class="todo-list">
+      <li class="todo-item">
+        <input type="checkbox" id="task1" />
+        <label for="task1">Create the list</label>
+        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
+      </li>
+      <li class="todo-item">
+        <input type="checkbox" id="task2" />
+        <label for="task2">
+          Wash the chair
+          <span class="timestamp">Due at 10:00am</span>
+        </label>
+        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
+      </li>
+    </ul>
+  </section>
+
+  <div class="add-task-wrapper">
+    <button class="add-btn" aria-label="Add Task">
+      <span class="plus"><i class="fa-solid fa-plus"></i></span>
+      <span class="text">Add Task</span>
+    </button>
+  </div>
+
+  <section class="completed-section">
+    <h2 class="section-title">Completed</h2>
+    <ul class="todo-list">
+      <li class="todo-item completed">
+        <input type="checkbox" id="task3" checked disabled />
+        <label for="task3">
+          Mow the lawn
+          <span class="timestamp">Completed at 9:15am</span>
+        </label>
+        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
+      </li>
+    </ul>
+  </section>
+</main>
+
+</body>
+</html>
