@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Todo App - Welcome</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>
-    /* Reset and base styles */
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWixZiD6gWhQMWG2J2vOQ6qJ+3W8i4YqC+9/1G1VZh5h1D6wR+3o1T2e1A5z5Qz5U2H2w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -20,331 +19,352 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 1rem;
     }
 
-main {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  margin: 2rem auto;
-  width: 100%;
-  max-width: 800px; /* allows wider layout */
-  box-sizing: border-box;
-}
+    main {
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      max-width: 700px;
+      box-sizing: border-box;
+    }
 
+    .todo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
 
-    h1 {
-      font-size: 4rem;
+    .todo-header h1 {
+      font-size: 2rem;
       line-height: 1.2;
-      text-align: left;             /* Align left */
-      margin-bottom: 3rem;          /* More bottom spacing for separation */
+      color: #1a1a1a;
+      flex: 1;
+      min-width: 150px;
     }
 
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      text-align: left;
+    .filter-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #444;
+      padding: 0.5rem;
+      transition: color 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      color: #007bff;
+    }
+
+    .search-bar {
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 0.5rem 2rem 0.5rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .search-bar .search-icon {
+      position: absolute;
+      right: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
       font-size: 0.9rem;
     }
-    
-    input[type="text"] {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      transition: border-color 0.3s ease;
+
+    .search-bar .error {
+      border-color: #dc3545;
     }
 
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #333;
+    .search-bar .error-message {
+      color: #dc3545;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      display: none;
     }
 
-    @media (min-width: 768px) {
-      /* h1 {
-        font-size: 4rem;
-        line-height: 1.2;
-      } */
-
-      input[type="text"] {
-        font-size: 1.1rem;
-      }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1.5rem 0 1rem;
+      color: #333;
     }
 
     .todo-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
     .todo-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #fefefe;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fefefe;
+      padding: 0.75rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
 
     .todo-item label {
-    flex: 1;
-    margin-left: 0.75rem;
-    font-weight: 500;
+      flex: 1;
+      margin-left: 0.75rem;
+      font-weight: 500;
+      font-size: 0.9rem;
     }
 
     .timestamp {
-    display: block;
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 0.25rem;
+      display: block;
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 0.25rem;
     }
 
     .info-btn {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: #555;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: #555;
+      padding: 0.5rem;
+      transition: color 0.2s ease;
     }
 
-    .add-task-container {
-    position: relative;
-    display: inline-block;
-    margin-top: 1rem;
+    .info-btn:hover {
+      color: #007bff;
+    }
+
+    .add-task-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin: 1.5rem 0;
     }
 
     .add-btn {
-    font-size: 1.75rem;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: none;
-    background-color: #333;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: #333;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 24px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.2s ease, padding 0.2s ease, width 0.2s ease;
+      width: 40px;
+      overflow: hidden;
+    }
+
+    .add-btn .text {
+      opacity: 0;
+      transition: opacity 0.2s ease;
     }
 
     .add-btn:hover {
-    background-color: #555;
+      width: 120px;
+      background-color: #555;
+      padding-right: 1.5rem;
     }
 
-    .add-label {
-    position: absolute;
-    top: 50%;
-    left: 60px;
-    transform: translateY(-50%);
-    opacity: 0;
-    pointer-events: none;
-    font-size: 0.95rem;
-    color: #333;
-    transition: opacity 0.3s ease;
+    .add-btn:hover .text {
+      opacity: 1;
     }
 
-    .add-task-container:hover .add-label {
-    opacity: 1;
+    .todo-item.completed label {
+      color: #aaa;
+      text-decoration: line-through;
     }
 
-.todo-header {
-  display: flex;
-  align-items: flex-start; /* Align everything to the top */
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  padding-top: 0.5rem;
-}
+    .todo-item input[type="checkbox"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      background-color: #fff;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
 
-.todo-header h1 {
-  font-size: 2.5rem;
-  flex-shrink: 0; /* don’t shrink title */
-  margin-right: auto; /* push remaining items to the right */
-}
+    .todo-item input[type="checkbox"]:checked {
+      background-color: #333;
+      border-color: #333;
+    }
 
-.filter-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #444;
-  flex-shrink: 0;
-}
+    .todo-item input[type="checkbox"]:checked::after {
+      content: "✔";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      font-size: 0.7rem;
+      color: white;
+    }
 
-.search-bar {
-  position: relative;
-  width: 200px;
-  flex-shrink: 0;
-}
+    @media (max-width: 640px) {
+      .todo-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
-.search-bar input {
-  width: 100%;
-  padding: 0.5rem 2rem 0.5rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
+      .todo-header h1 {
+        font-size: 1.8rem;
+      }
 
-.search-bar .search-icon {
-  position: absolute;
-  right: 0.6rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #888;
-}
+      .search-bar {
+        max-width: 100%;
+        margin-top: 0.5rem;
+      }
 
-/* Section titles */
-.section-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 1.5rem 0 1rem;
-}
+      .add-btn {
+        font-size: 0.8rem;
+        width: 36px;
+      }
 
-/* Add Button with Expand-on-Hover Effect */
-.add-task-wrapper {
-  display: flex;
-  justify-content: flex-end; /* aligns the button to the right */
-  margin-top: 2rem;
-}
+      .add-btn:hover {
+        width: 100px;
+      }
+    }
 
-.add-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #333;
-  color: white;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 24px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: width 0.3s ease, padding 0.3s ease, background 0.3s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 48px; /* initial width for just the + */
-}
+    @media (min-width: 640px) {
+      main {
+        padding: 2rem;
+      }
 
-.add-btn .text {
-  opacity: 0;
-  transition: opacity 0.2s ease, margin 0.3s ease;
-  margin-left: 0;
-}
+      .todo-header h1 {
+        font-size: 2.5rem;
+      }
 
-/* When hovered */
-.add-btn:hover {
-  width: auto;
-  padding-right: 1.5rem;
-}
+      .add-btn {
+        width: 48px;
+      }
 
-.add-btn:hover .text {
-  opacity: 1;
-  margin-left: 0.5rem;
-}
+      .add-btn:hover {
+        width: 140px;
+      }
+    }
 
+    @media (min-width: 768px) {
+      main {
+        max-width: 800px;
+      }
 
-/* Completed item styles */
-.todo-item.completed label {
-  color: #aaa;
-  text-decoration: line-through;
-}
+      .todo-header h1 {
+        font-size: 3rem;
+      }
 
-.timestamp {
-  display: block;
-  font-size: 0.8rem;
-  color: #777;
-  margin-top: 0.25rem;
-}
-
-.todo-item input[type="checkbox"] {
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #888;
-  border-radius: 50%;
-  background-color: #fff;
-  cursor: pointer;
-  position: relative;
-  margin-right: 0.75rem;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.todo-item input[type="checkbox"]:checked {
-  background-color: #333;
-  border-color: #333;
-}
-
-/* Add a tick ✔ inside when checked */
-.todo-item input[type="checkbox"]:checked::after {
-  content: "✔";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -55%);
-  font-size: 0.75rem;
-  color: white;
-  line-height: 1;
-}
-
+      .search-bar input,
+      .add-btn {
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
   <main>
-  <header class="todo-header">
-    <h1>Todo</h1>
-    <button class="filter-btn" aria-label="Filter tasks"><i class="fa-solid fa-filter"></i></button>
-    <div class="search-bar">
-      <input type="text" placeholder="Search tasks..." />
-      <span class="search-icon"><i class="fas fa-search text-gray-500"></i></span>
+    <header class="todo-header">
+      <h1>Todo</h1>
+      <button class="filter-btn" aria-label="Filter tasks"><i class="fa-solid fa-filter"></i></button>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search tasks..." aria-describedby="searchError" />
+        <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <div id="searchError" class="error-message">Search cannot be empty</div>
+      </div>
+    </header>
+
+    <section class="pending-section">
+      <h2 class="section-title">Pending</h2>
+      <ul class="todo-list">
+        <li class="todo-item">
+          <input type="checkbox" id="task1" />
+          <label for="task1">Create the list</label>
+          <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
+        </li>
+        <li class="todo-item">
+          <input type="checkbox" id="task2" />
+          <label for="task2">
+            Wash the chair
+            <span class="timestamp">Due at 10:00am</span>
+          </label>
+          <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
+        </li>
+      </ul>
+    </section>
+
+    <div class="add-task-wrapper">
+      <button class="add-btn" aria-label="Add Task">
+        <span class="plus"><i class="fa-solid fa-plus"></i></span>
+        <span class="text">Add Task</span>
+      </button>
     </div>
-  </header>
 
-  <section class="pending-section">
-    <h2 class="section-title">Pending</h2>
-    <ul class="todo-list">
-      <li class="todo-item">
-        <input type="checkbox" id="task1" />
-        <label for="task1">Create the list</label>
-        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-      </li>
-      <li class="todo-item">
-        <input type="checkbox" id="task2" />
-        <label for="task2">
-          Wash the chair
-          <span class="timestamp">Due at 10:00am</span>
-        </label>
-        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-      </li>
-    </ul>
-  </section>
+    <section class="completed-section">
+      <h2 class="section-title">Completed</h2>
+      <ul class="todo-list">
+        <li class="todo-item completed">
+          <input type="checkbox" id="task3" checked disabled />
+          <label for="task3">
+            Mow the lawn
+            <span class="timestamp">Completed at 9:15am</span>
+          </label>
+          <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
+        </li>
+      </ul>
+    </section>
+  </main>
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const searchError = document.getElementById('searchError');
 
-  <div class="add-task-wrapper">
-    <button class="add-btn" aria-label="Add Task">
-      <span class="plus"><i class="fa-solid fa-plus"></i></span>
-      <span class="text">Add Task</span>
-    </button>
-  </div>
+    function validateSearch() {
+      const searchTerm = searchInput.value.trim();
+      if (searchTerm === '') {
+        searchInput.classList.add('error');
+        searchError.style.display = 'block';
+        return false;
+      } else {
+        searchInput.classList.remove('error');
+        searchError.style.display = 'none';
+        return true;
+      }
+    }
 
-  <section class="completed-section">
-    <h2 class="section-title">Completed</h2>
-    <ul class="todo-list">
-      <li class="todo-item completed">
-        <input type="checkbox" id="task3" checked disabled />
-        <label for="task3">
-          Mow the lawn
-          <span class="timestamp">Completed at 9:15am</span>
-        </label>
-        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-      </li>
-    </ul>
-  </section>
-</main>
+    searchInput.addEventListener('input', validateSearch);
 
+    // Clear error state on page load
+    window.addEventListener('load', () => {
+      if (searchInput.value.trim() !== '') {
+        searchInput.classList.remove('error');
+        searchError.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
