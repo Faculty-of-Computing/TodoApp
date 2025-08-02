@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Todo App - Welcome</title>
   <style>
-    /* Reset and base styles */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -19,55 +18,112 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 1rem;
     }
 
-main {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  margin: 2rem auto;
-  width: 100%;
-  max-width: 600px; /* allows wider layout */
-  box-sizing: border-box;
-}
+    main {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      max-width: 400px;
+    }
+
     h1 {
-      font-size: 4rem;
+      font-size: 2.5rem;
       line-height: 1.2;
-      text-align: center;             /* Align left */
-      margin-bottom: 3rem;          /* More bottom spacing for separation */
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
     }
 
     label {
       display: block;
       margin-bottom: 0.5rem;
       font-weight: 500;
-      text-align: left;
       font-size: 0.9rem;
+      color: #333;
     }
-    
+
     input[type="text"] {
       width: 100%;
       padding: 0.75rem 1rem;
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 8px;
-      transition: border-color 0.3s ease;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     input[type="text"]:focus {
       outline: none;
-      border-color: #333;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .error {
+      border-color: #dc3545;
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      touch-action: manipulation;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+    }
+
+    @media (min-width: 640px) {
+      main {
+        max-width: 500px;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
     }
 
     @media (min-width: 768px) {
-      /* h1 {
-        font-size: 4rem;
-        line-height: 1.2;
-      } */
+      main {
+        max-width: 600px;
+      }
 
-      input[type="text"] {
+      h1 {
+        font-size: 3.5rem;
+      }
+
+      input[type="text"], button {
         font-size: 1.1rem;
       }
     }
@@ -76,10 +132,50 @@ main {
 <body>
   <main role="main">
     <h1>Todo</h1>
-    <form aria-label="Username Form">
-      <label for="username">Enter your username:</label>
-      <input type="text" id="username" name="username" placeholder="johndoe" required />
+    <form id="usernameForm" aria-label="Username Form">
+      <div class="form-group">
+        <label for="username">Enter your username:</label>
+        <input type="text" id="username" name="username" placeholder="johndoe" aria-describedby="usernameError" />
+        <div id="usernameError" class="error-message">Username cannot be empty</div>
+      </div>
+      <button type="submit">Get Started</button>
     </form>
   </main>
+  <script>
+    const form = document.getElementById('usernameForm');
+    const usernameInput = document.getElementById('username');
+    const errorMessage = document.getElementById('usernameError');
+
+    function validateUsername() {
+      const username = usernameInput.value.trim();
+      if (username === '') {
+        usernameInput.classList.add('error');
+        errorMessage.style.display = 'block';
+        return false;
+      } else {
+        usernameInput.classList.remove('error');
+        errorMessage.style.display = 'none';
+        return true;
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (validateUsername()) {
+        // Add your logic for successful submission
+        console.log('Username submitted:', usernameInput.value.trim());
+      }
+    });
+
+    usernameInput.addEventListener('input', validateUsername);
+
+    // Ensure error state is cleared on page load
+    window.addEventListener('load', () => {
+      if (usernameInput.value.trim() !== '') {
+        usernameInput.classList.remove('error');
+        errorMessage.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
