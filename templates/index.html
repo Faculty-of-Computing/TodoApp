@@ -80,7 +80,7 @@
     button {
       width: 100%;
       padding: 0.75rem;
-      background-color: #007bff;
+      background-color: #1a1b1b;
       color: white;
       border: none;
       border-radius: 8px;
@@ -92,7 +92,7 @@
     }
 
     button:hover {
-      background-color: #0056b3;
+      background-color: #252525;
     }
 
     button:active {
@@ -132,7 +132,7 @@
 <body>
   <main role="main">
     <h1>Todo</h1>
-    <form id="usernameForm" aria-label="Username Form">
+    <form id="usernameForm" method="post" aria-label="Username Form">
       <div class="form-group">
         <label for="username">Enter your username:</label>
         <input type="text" id="username" name="username" placeholder="johndoe" aria-describedby="usernameError" />
@@ -165,6 +165,8 @@
         // Add your logic for successful submission
         console.log('Username submitted:', usernameInput.value.trim());
       }
+
+      form.submit();
     });
 
     usernameInput.addEventListener('input', validateUsername);
