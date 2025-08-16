@@ -25,7 +25,7 @@
     }
 
 main {
-  background-color: #fff;
+  background-color: #a6cdfeb0;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -177,28 +177,6 @@ main {
   cursor: pointer;
   color: #444;
   flex-shrink: 0;
-}
-
-.search-bar {
-  position: relative;
-  width: 200px;
-  flex-shrink: 0;
-}
-
-.search-bar input {
-  width: 100%;
-  padding: 0.5rem 2rem 0.5rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.search-bar .search-icon {
-  position: absolute;
-  right: 0.6rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #888;
 }
 
 /* Section titles */
@@ -442,20 +420,60 @@ select:focus {
 }
 
 
+    .todo-header h1 { font-size: 2rem; flex-shrink: 0; margin-right: auto; }
+    .filter-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #444; flex-shrink: 0; }
+
+        
+    .search-bar {
+      position: relative;
+      width: 200px; /* fixed, smaller width */
+    }
+
+    .search-bar input {
+      width: 100%; /* fill the container */
+      padding: 0.5rem 0.5rem 0.5rem 2rem; /* leave space for the icon */
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .search-bar .search-icon {
+      position: absolute;
+      left: 0.6rem; /* icon on the left */
+      top: 30%;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none;
+    }
+
+    .login-icon {
+    display: block;
+    width: 90px;
+    height: 90px;
+    border-radius: 50px;
+    margin: 0 auto 15px auto;
+    }
 
   </style>
 </head>
 <body>
   <main>
-  <header class="todo-header">
-    <h1>Todo</h1>
+      <header class="todo-header">
+    <h1>Welcome, {{ session.username }}</h1>
     <button class="filter-btn" aria-label="Filter tasks"><i class="fa-solid fa-filter"></i></button>
+    <img src="do.webp" alt="To-Do Icon" class="login-icon" />
     <div class="search-bar">
       <input type="text" placeholder="Search tasks..." />
       <span class="search-icon"><i class="fas fa-search text-gray-500"></i></span>
     </div>
   </header>
 
+   <div class="add-task-wrapper">
+    <button class="add-btn" aria-label="Add Task">
+      <span class="plus"><i class="fa-solid fa-plus"></i></span>
+      <span class="text">Add Task</span>
+    </button>
+  </div>
+  
   <section class="pending-section">
     <h2 class="section-title">Pending</h2>
     <ul class="todo-list">
@@ -474,13 +492,6 @@ select:focus {
       </li>
     </ul>
   </section>
-
-  <div class="add-task-wrapper">
-    <button class="add-btn" aria-label="Add Task">
-      <span class="plus"><i class="fa-solid fa-plus"></i></span>
-      <span class="text">Add Task</span>
-    </button>
-  </div>
 
   <section class="completed-section">
     <h2 class="section-title">Completed</h2>
