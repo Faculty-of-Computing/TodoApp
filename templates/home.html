@@ -42,7 +42,6 @@
 }
 
 
-
     h1 {
       color: #2B49F3;
       font-size: 2rem;
@@ -117,35 +116,38 @@
       font-size: 0.75rem; color: white; line-height: 1;
     }
 
-    .todo-header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; padding-top: 0.5rem;
+        .todo-header {
+      display: flex;
+      flex-direction: column; /* stack items vertically */
+      align-items: flex-start; /* align to left */
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-top: 0.5rem;
     }
 
-    .todo-header h1 { font-size: 2rem; flex-shrink: 0; margin-right: auto; }
-    .filter-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #2B49F3; flex-shrink: 0; }
+    .todo-header h1 {
+      font-size: 2rem;
+    }
 
-        
-    .search-bar {
-      position: relative;
-      width: 200px; /* fixed, smaller width */
+        .search-bar {
+      position: relative; /* Make the icon position relative to this container */
+      width: 200px;       /* Or whatever width you want */
     }
 
     .search-bar input {
+      width: 100%;
+      padding: 0.5rem 0.5rem 0.5rem 2rem; /* Leave space on the left for icon */
       border: 1px solid #E0E0E0;
-      width: 100%; /* fill the container */
-      padding: 0.5rem 0.5rem 0.5rem 2rem; /* leave space for the icon */
-      color: #333333;
       border-radius: 6px;
     }
 
     .search-bar .search-icon {
       position: absolute;
-      left: 0.5rem; /* icon on the left */
+      left: 0.5rem;         /* space from left edge */
       top: 50%;
       transform: translateY(-50%);
       color: #4A90E2;
-      pointer-events: none;
+      pointer-events: none;  /* icon won’t block clicks */
     }
 
      .login-icon {
@@ -156,7 +158,6 @@
   height: auto;
   z-index: 100; /* keep it on top of other elements */
 }
-
 
     /* Mobile-first adjustments */
 @media (max-width: 600px) {
@@ -214,9 +215,15 @@
     font-size: 1.5rem;
   }
 
-  .filter-btn {
-    font-size: 1.2rem;
-  }
+  .filter-wrapper select {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background-color: #fff;
+    color: #333;
+}
 
   .add-btn {
     padding: 0.6rem;
@@ -231,32 +238,48 @@ h2 {
   text-shadow: 1px 1px 2px rgba(0,0,0,0.15); /* subtle shadow */
 }
 
-
 h2:hover {
   color: #4A90E2; /* Accent blue on hover */
 }
-
 
   </style>
 </head>
 <body>
   <main>
       <header class="todo-header">
-    <h1>Welcome, {{ session.username }}</h1>
-    <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
-    <button class="filter-btn" aria-label="Filter tasks"><i class="fa-solid fa-filter"></i></button>
-    <div class="search-bar">
-      <input type="text" placeholder="Search tasks..." />
-      <span class="search-icon"><i class="fas fa-search text-gray-500"></i></span>
-    </div>
-  </header>
+      <h1>Welcome, {{ session.username }}</h1>
+      
+      <!-- Search bar below username -->
+      <div class="search-bar">
+        <input type="text" placeholder="Search tasks..." />
+        <span class="search-icon"><i class="fas fa-search text-gray-500"></i></span>
+      </div>
 
-    <div class="add-task-wrapper">
-      <button class="add-btn" aria-label="Add Task">
-        <span class="plus"><i class="fa-solid fa-plus"></i></span>
-        <span class="text">Add Task</span>
-      </button>
+      <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
+      <div class="filter-wrapper">
+  <form method="GET" action="/">
+    <select name="filter" onchange="this.form.submit()">
+      <option value="">-- Filter Tasks --</option>
+      <option value="pending" {% if request.args.get('filter') == 'pending' %}selected{% endif %}>Pending</option>
+      <option value="completed" {% if request.args.get('filter') == 'completed' %}selected{% endif %}>Completed</option>
+      <option value="high" {% if request.args.get('filter') == 'high' %}selected{% endif %}>High Priority</option>
+      <option value="medium" {% if request.args.get('filter') == 'medium' %}selected{% endif %}>Medium Priority</option>
+      <option value="low" {% if request.args.get('filter') == 'low' %}selected{% endif %}>Low Priority</option>
+    </select>
+  </form>
+</div>
+
+    </header>
+
+      <div class="add-task-wrapper">
+      <a href="{{ url_for('add_page') }}">
+        <button class="add-btn" aria-label="Add Task">
+          <span class="plus"><i class="fa-solid fa-plus"></i></span>
+          <span class="text">Add Task</span>
+        </button>
+      </a>
     </div>
+
 
     <section>
       <h2>Pending Tasks</h2>
@@ -297,3 +320,4 @@ h2:hover {
   </main>
 </body>
 </html>
+

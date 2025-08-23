@@ -45,7 +45,7 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(255), nullable=False)
     priority = db.Column(db.Enum(TaskPriority), default=TaskPriority.MEDIUM, nullable=False)
-    tags = db.column(db.String(500))
+    tags = db.Column(db.String(500))
     
     created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     last_updated = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
@@ -74,6 +74,13 @@ def get_user():
     if "username" in session:
         return User.query.filter_by(username=session["username"]).first()
     return None
+
+@app.route("/add")
+def add_page():
+    user = get_user()
+    if not user:
+        return redirect("/")  # redirect if no user in session
+    return render_template("add.html")
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -143,10 +150,10 @@ def create_task():
         if user and task_desc:
             new_task = Task()
 
-            new_task.task = task_desc,
-            new_task.due_date = due_datetime,
+            new_task.task = task_desc
+            new_task.due_date = due_datetime
             new_task.user_id = user.id
-            new_task.priority = priority
+            new_task.priority = TaskPriority(priority)  if priority else TaskPriority.MEDIUM
             new_task.tags = tags
             
             db.session.add(new_task)

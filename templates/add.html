@@ -4,21 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Todo App - Welcome</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>
-    /* Reset and base styles */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-       body {
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       border-radius: 16px;
       font-family: 'Segoe UI', sans-serif;
-      background: url('uu.png') no-repeat center center/cover;
+      background: url("{{ url_for('static', filename='images/uu.png') }}") no-repeat center center/cover;
       min-height: 115vh;
       display: flex;
       justify-content: center;
@@ -27,560 +24,201 @@
     }
 
     main {
-  background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
-  backdrop-filter: blur(3px);           /* reduce blur */
-  -webkit-backdrop-filter: blur(3px);   /* Safari support */
-  padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  margin: 2rem auto;
-  overflow: hidden;
-  width: 100%;
-  max-width: 800px;
-  border-radius: 30px;
-  box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  position: relative;
-}
-
-
-
-    h1 {
-      color: #2B49F3;
-      font-size: 2rem;
-      line-height: 1.2;
-      text-align: left;
-      margin-bottom: 2rem;
+      background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin: 2rem auto;
+      overflow: hidden;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      position: relative;
     }
 
-    @media (min-width: 768px) {
-      h1 { font-size: 3rem; }
-    }
+    h1 { color: #2B49F3; font-size: 2rem; line-height: 1.2; margin-bottom: 2rem; }
+    h2 { font-family: 'Poppins', sans-serif; color: #1A3ACB; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.15); }
+    h2:hover { color: #4A90E2; }
 
     label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
-
-    input[type="text"] {
+    input[type="text"], input[type="date"], input[type="time"], select {
       width: 100%;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
+      max-width: 300px;
+      padding: 0.5rem 0.75rem;
       border: 1px solid #ccc;
       border-radius: 8px;
-      transition: border-color 0.3s ease;
+      font-size: 0.95rem;
+      background-color: #f9f9f9;
+      color: #333;
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 1rem;
+      box-sizing: border-box;
     }
 
-    input[type="text"]:focus { outline: none; border-color: #333; }
-
-    .todo-list { list-style: none; padding: 0; margin: 0 0 2rem; display: flex; flex-direction: column; gap: 1rem; }
-
-    .todo-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #D6E4FF;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      color: #333333;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus, select:focus {
+      border-color: #3f51b5;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(63,81,181,0.2);
     }
 
+    .todo-header { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; padding-top: 0.5rem; }
+    .search-bar { position: relative; width: 200px; }
+    .search-bar input { width: 100%; padding: 0.5rem 0.5rem 0.5rem 2rem; border: 1px solid #E0E0E0; border-radius: 6px; }
+    .search-bar .search-icon { position: absolute; left: 0.5rem; top: 50%; transform: translateY(-50%); color: #4A90E2; pointer-events: none; }
+
+    .login-icon { position: absolute; top: 1rem; right: 1rem; width: 20%; height: auto; z-index: 100; }
+
+    .todo-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; padding: 0; margin: 0 0 2rem; }
+    .todo-item { display: flex; align-items: center; justify-content: space-between; background-color: #D6E4FF; padding: 0.75rem 1rem; border-radius: 8px; color: #333; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
     .todo-item label { flex: 1; margin-left: 0.75rem; font-weight: 500; }
+    .todo-item.completed label { color: #888; text-decoration: line-through; }
 
-    .timestamp { display: block; font-size: 0.8rem; color: #666; margin-top: 0.25rem; }
+    .todo-item input[type="checkbox"] { appearance: none; width: 20px; height: 20px; border: 2px solid #888; border-radius: 50%; background-color: #fff; cursor: pointer; position: relative; margin-right: 0.75rem; transition: background-color 0.2s ease, border-color 0.2s ease; }
+    .todo-item input[type="checkbox"]:checked { background-color: #333; border-color: #333; }
+    .todo-item input[type="checkbox"]:checked::after { content: "✔"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); font-size: 0.75rem; color: white; line-height: 1; }
 
     .info-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #2B49F3; }
 
     .add-task-wrapper { display: flex; justify-content: flex-end; margin-top: 2rem; }
-
-    .add-btn {
-      display: flex; align-items: center; gap: 0.5rem; background-color: #2B49F3;
-      color: white; padding: 0.75rem 1rem; border: none; border-radius: 24px;
-      cursor: pointer; font-size: 1rem; transition: width 0.3s ease, padding 0.3s ease, background 0.3s ease;
-      white-space: nowrap; overflow: hidden; width: 48px;
-    }
-
+    .add-btn { display: flex; align-items: center; gap: 0.5rem; background-color: #2B49F3; color: white; padding: 0.75rem 1rem; border: none; border-radius: 24px; cursor: pointer; font-size: 1rem; transition: width 0.3s ease, padding 0.3s ease, background 0.3s ease; white-space: nowrap; overflow: hidden; width: 48px; }
     .add-btn .text { opacity: 0; transition: opacity 0.2s ease, margin 0.3s ease; margin-left: 0; }
     .add-btn:hover { width: auto; padding-right: 1.5rem; background-color: #1A3ACB; }
     .add-btn:hover .text { opacity: 1; margin-left: 0.5rem; }
 
-    .todo-item.completed label { color: #888888; text-decoration: line-through; }
+    .timestamp { font-size: 0.8rem; color: #666; margin-top: 0.25rem; }
 
-    .todo-item input[type="checkbox"] {
-      appearance: none; width: 20px; height: 20px; border: 2px solid #888; border-radius: 50%;
-      background-color: #fff; cursor: pointer; position: relative; margin-right: 0.75rem;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+    /* Overlay / task card */
+    .task-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+    .task-info-card { background: #fff; padding: 20px; border-radius: 10px; width: 320px; position: relative; box-shadow: 0 8px 20px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif; }
+    .task-title { width: 100%; padding: 10px; margin-bottom: 15px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
+    .field-row { display: flex; align-items: center; margin-bottom: 12px; gap: 8px; }
+    .field-row label { flex: 1; display: flex; align-items: center; font-size: 14px; gap: 6px; }
+    .field-row select { flex: 1.5; padding: 5px; border-radius: 5px; border: 1px solid #ccc; }
+    .buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+    .update-btn { background-color: #007BFF; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
+    .delete-btn { background-color: #DC3545; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
+    .close-btn { position: absolute; bottom: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; }
+
+    @media (max-width: 600px) {
+      main { padding: 1rem; margin: 0; border-radius: 8px; }
+      .todo-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .todo-header h1 { font-size: 1.8rem; }
+      .search-bar { width: 100%; }
+      .add-btn { width: 100%; justify-content: center; font-size: 1rem; }
+      .todo-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      .task-info-card { width: 90%; max-width: 350px; }
     }
-
-    .todo-item input[type="checkbox"]:checked {
-      background-color: #333; border-color: #333;
-    }
-
-    .todo-item input[type="checkbox"]:checked::after {
-      content: "✔"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%);
-      font-size: 0.75rem; color: white; line-height: 1;
-    }
-
-    .todo-header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; padding-top: 0.5rem;
-    }
-
-    .todo-header h1 { font-size: 2rem; flex-shrink: 0; margin-right: auto; }
-    .filter-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #2B49F3; flex-shrink: 0; }
-
-.filter-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #444;
-  flex-shrink: 0;
-}
-
-/* Section titles */
-.section-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 1.5rem 0 1rem;
-}
-
-/* Add Button with Expand-on-Hover Effect */
-.add-task-wrapper {
-  display: flex;
-  justify-content: flex-end; /* aligns the button to the right */
-  margin-top: 2rem;
-}
-
-.add-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #333;
-  color: white;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 24px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: width 0.3s ease, padding 0.3s ease, background 0.3s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 48px; /* initial width for just the + */
-}
-
-.add-btn .text {
-  opacity: 0;
-  transition: opacity 0.2s ease, margin 0.3s ease;
-  margin-left: 0;
-}
-
-/* When hovered */
-.add-btn:hover {
-  width: auto;
-  padding-right: 1.5rem;
-}
-
-.add-btn:hover .text {
-  opacity: 1;
-  margin-left: 0.5rem;
-}
-
-
-/* Completed item styles */
-.todo-item.completed label {
-  color: #aaa;
-  text-decoration: line-through;
-}
-
-.timestamp {
-  display: block;
-  font-size: 0.8rem;
-  color: #777;
-  margin-top: 0.25rem;
-}
-
-.todo-item input[type="checkbox"] {
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #888;
-  border-radius: 50%;
-  background-color: #fff;
-  cursor: pointer;
-  position: relative;
-  margin-right: 0.75rem;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.todo-item input[type="checkbox"]:checked {
-  background-color: #333;
-  border-color: #333;
-}
-
-/* Add a tick ✔ inside when checked */
-.todo-item input[type="checkbox"]:checked::after {
-  content: "✔";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -55%);
-  font-size: 0.75rem;
-  color: white;
-  line-height: 1;
-}
-
-.task-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.task-info-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  width: 320px;
-  position: relative;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  font-family: sans-serif;
-}
-
-.task-title {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.field-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  gap: 8px;
-}
-
-.field-row label {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  gap: 6px;
-}
-
-.field-row select {
-  flex: 1.5;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-.update-btn,
-.delete-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.update-btn {
-  background-color: #007BFF;
-  color: white;
-}
-
-.delete-btn {
-  background-color: #DC3545;
-  color: white;
-}
-
-.close-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* Common styles for all inputs */
-input[type="date"],
-input[type="time"],
-input[type="text"] {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  background-color: #f9f9f9;
-  color: #333;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
-  width: 100%;
-  max-width: 300px; /* Adjust as needed */
-  margin-bottom: 1rem;
-  box-sizing: border-box;
-}
-
-/* On focus */
-input[type="date"]:focus,
-input[type="time"]:focus,
-input[type="text"]:focus {
-  border-color: #3f51b5;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
-}
-
-/* Specific tweaks for date/time pickers (browser defaults) */
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5); /* style the calendar icon */
-  cursor: pointer;
-}
-/* Base style for the select dropdown */
-select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  background-color: #f9f9f9;
-  color: #333;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
-  width: 100%;
-  max-width: 300px; /* Adjust based on layout */
-  margin-bottom: 1rem;
-  box-sizing: border-box;
-  appearance: none; /* Remove default OS styling */
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%226%22%20viewBox%3D%220%200%2010%206%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%206%205-6z%22%20fill%3D%22%23333%22/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 10px 6px;
-  cursor: pointer;
-}
-
-/* Focus styles */
-select:focus {
-  border-color: #3f51b5;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
-}
-
-
-    .todo-header h1 { font-size: 2rem; flex-shrink: 0; margin-right: auto; }
-    .filter-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #444; flex-shrink: 0; }
-
-        
-    .search-bar {
-      position: relative;
-      width: 200px; /* fixed, smaller width */
-    }
-
-    .search-bar input {
-      width: 100%; /* fill the container */
-      padding: 0.5rem 0.5rem 0.5rem 2rem; /* leave space for the icon */
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    .search-bar .search-icon {
-      position: absolute;
-      left: 0.6rem; /* icon on the left */
-      top: 30%;
-      transform: translateY(-50%);
-      color: #888;
-      pointer-events: none;
-    }
-
-   .login-icon {
-  position: absolute;
-  top: 1rem;   /* distance from top */
-  right: 1rem; /* distance from right */
-  width: 20%;  /* adjust size as needed */
-  height: auto;
-  z-index: 100; /* keep it on top of other elements */
-}
-
-    
-    /* Mobile-first adjustments */
-@media (max-width: 600px) {
-  body {
-    padding: 1rem;
-    height: auto; /* allow scroll if needed */
-  }
-
-  main {
-    padding: 1rem;
-    margin: 0;
-    width: 100%;
-    border-radius: 8px;
-  }
-
-  .todo-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .todo-header h1 {
-    font-size: 1.8rem;
-  }
-
-  .search-bar {
-    width: 100%; /* full width for search */
-  }
-
-  .add-btn {
-    width: 100%;
-    justify-content: center;
-    font-size: 1rem;
-  }
-
-  .todo-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .task-info-card {
-    width: 90%; /* make it fluid */
-    max-width: 350px;
-  }
-
-  .section-title {
-    font-size: 1rem;
-  }
-}
-
-/* Extra small devices (portrait phones <400px) */
-@media (max-width: 600px) {
-  .todo-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .filter-btn {
-    font-size: 1.2rem;
-  }
-
-  .add-btn {
-    padding: 0.6rem;
-  }
-}
-h2 {
-  font-family: 'Poppins', sans-serif;
-  color: #1A3ACB;       /* Captivating, darker blue */
-  font-weight: 600;      /* Bold for emphasis */
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.15); /* subtle shadow */
-}
-
-
-h2:hover {
-  color: #4A90E2; /* Accent blue on hover */
-}
-
   </style>
 </head>
 <body>
   <main>
-      <header class="todo-header">
-    <h1>Welcome, {{ session.username }}</h1>
-    <button class="filter-btn" aria-label="Filter tasks"><i class="fa-solid fa-filter"></i></button>
-    <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
-    <div class="search-bar">
-      <input type="text" placeholder="Search tasks..." />
-      <span class="search-icon"><i class="fas fa-search text-gray-500"></i></span>
-    </div>
-  </header>
+    <header class="todo-header">
+      <h1>Welcome, {{ session.username }}</h1>
+      <div class="search-bar">
+        <input type="text" placeholder="Search tasks..." />
+        <span class="search-icon"><i class="fas fa-search"></i></span>
+      </div>
+      <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
+      <div class="filter-wrapper">
+        <form method="GET" action="/">
+          <select name="filter" onchange="this.form.submit()">
+            <option value="">-- Filter Tasks --</option>
+            <option value="pending" {% if request.args.get('filter') == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="completed" {% if request.args.get('filter') == 'completed' %}selected{% endif %}>Completed</option>
+            <option value="high" {% if request.args.get('filter') == 'high' %}selected{% endif %}>High Priority</option>
+            <option value="medium" {% if request.args.get('filter') == 'medium' %}selected{% endif %}>Medium Priority</option>
+            <option value="low" {% if request.args.get('filter') == 'low' %}selected{% endif %}>Low Priority</option>
+          </select>
+        </form>
+      </div>
+    </header>
 
-   <div class="add-task-wrapper">
-    <button class="add-btn" aria-label="Add Task">
-      <span class="plus"><i class="fa-solid fa-plus"></i></span>
-      <span class="text">Add Task</span>
-    </button>
-  </div>
-  
-  <section class="pending-section">
-    <h2 class="section-title">Pending</h2>
-    <ul class="todo-list">
-      <li class="todo-item">
-        <input type="checkbox" id="task1" />
-        <label for="task1">Create the list</label>
-        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-      </li>
-      <li class="todo-item">
-        <input type="checkbox" id="task2" />
-        <label for="task2">
-          Wash the chair
-          <span class="timestamp">Due at 10:00am</span>
-        </label>
-        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-      </li>
-    </ul>
-  </section>
-
-  <section class="completed-section">
-    <h2 class="section-title">Completed</h2>
-    <ul class="todo-list">
-      <li class="todo-item completed">
-        <input type="checkbox" id="task3" checked disabled />
-        <label for="task3">
-          Mow the lawn
-          <span class="timestamp">Completed at 9:15am</span>
-        </label>
-        <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-      </li>
-    </ul>
-  </section>
-
-  <!-- Overlay -->
-   <div class="task-overlay">
-  <div class="task-info-card">
-    <button class="close-btn">&times;</button>
-
-    <input type="text" class="task-title" placeholder="Task Title">
-
-    <div class="field-row">
-      <label><i class="fa-solid fa-calendar"></i> Date:</label>
-      <input type="date">
+    <div class="add-task-wrapper">
+      <a href="{{ url_for('add_page') }}">
+        <button class="add-btn" aria-label="Add Task">
+          <span class="plus"><i class="fa-solid fa-plus"></i></span>
+          <span class="text">Add Task</span>
+        </button>
+      </a>
     </div>
 
-    <div class="field-row">
-      <label><i class="fa-solid fa-clock"></i> Time:</label>
-      <input type="time">
+    <section>
+      <h2>Pending Tasks</h2>
+      <ul class="todo-list">
+        {% if pending_tasks %}
+          {% for task in pending_tasks %}
+            <li class="todo-item">
+              <input type="checkbox" id="task{{ task.id }}" />
+              <label for="task{{ task.id }}">{{ task.task }}</label>
+              <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
+            </li>
+          {% endfor %}
+        {% else %}
+          <li>No pending tasks</li>
+        {% endif %}
+      </ul>
+    </section>
+
+    <section>
+      <h2>Completed Tasks</h2>
+      <ul class="todo-list">
+        {% if completed_tasks %}
+          {% for task in completed_tasks %}
+            <li class="todo-item completed">
+              <input type="checkbox" id="task{{ task.id }}" checked disabled />
+              <label for="task{{ task.id }}">
+                {{ task.task }}
+                <span class="timestamp">Completed at {{ task.completed_at }}</span>
+              </label>
+              <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
+            </li>
+          {% endfor %}
+        {% else %}
+          <li>No completed tasks</li>
+        {% endif %}
+      </ul>
+    </section>
+
+    <!-- Overlay / Add Task Fields (Kept Intact) -->
+    <div class="task-overlay">
+      <div class="task-info-card">
+        <button class="close-btn">&times;</button>
+
+        <input type="text" class="task-title" placeholder="Task Title">
+
+        <div class="field-row">
+          <label><i class="fa-solid fa-calendar"></i> Date:</label>
+          <input type="date">
+        </div>
+
+        <div class="field-row">
+          <label><i class="fa-solid fa-clock"></i> Time:</label>
+          <input type="time">
+        </div>
+
+        <div class="field-row">
+          <label><i class="fa-solid fa-flag"></i> Priority:</label>
+          <select>
+            <option>None</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <label><i class="fa-solid fa-tags"></i> Tags:</label>
+          <input type="text">
+        </div>
+
+        <div class="buttons">
+          <button class="update-btn">Update</button>
+          <button class="delete-btn">Delete</button>
+        </div>
+      </div>
     </div>
-
-    <div class="field-row">
-      <label><i class="fa-solid fa-flag"></i> Priority:</label>
-      <select>
-        <option>None</option>
-        <option>Low</option>
-        <option>Medium</option>
-        <option>High</option>
-      </select>
-    </div>
-
-    <div class="field-row">
-      <label><i class="fa-solid fa-tags"></i> Tags:</label>
-      <input type="text">
-    </div>
-
-    <div class="buttons">
-      <button class="update-btn">Update</button>
-      <button class="delete-btn">Delete</button>
-    </div>
-  </div>
-</div>
-
-</main>
-
+  </main>
 </body>
 </html>
