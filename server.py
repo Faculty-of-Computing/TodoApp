@@ -70,6 +70,12 @@ def generate_unique_username(base_username):
     return username
 
 
+def get_user():
+    if "username" in session:
+        return User.query.filter_by(username=session["username"]).first()
+    return None
+
+
 @app.route("/", methods=['GET', 'POST'])
 def homepage():
     error_text = ""
@@ -90,21 +96,20 @@ def homepage():
         else:
             error_text = "Username not present"
 
-    if "username" in session:
-        # Get all user tasks
-        user = User.query.filter_by(username=session["username"]).first()
-        if not user:
-            return redirect("/logout")
-        
-        tasks = Task.query.filter_by(user_id=user.id).all()
+    user = get_user()
 
-        pending_tasks = [task for task in tasks if not task.is_completed]
-        completed_tasks = [task for task in tasks if task.is_completed]
-
-        return render_template("home.html", pending_tasks=pending_tasks, completed_tasks=completed_tasks)
+    if not user:
+        error_text = "User not found"
+        return render_template("index.html", error_text=error_text)
     
-    return render_template("index.html", error_text=error_text)
+    # Get all user tasks    
+    tasks = Task.query.filter_by(user_id=user.id).all()
 
+    pending_tasks = [task for task in tasks if not task.is_completed]
+    completed_tasks = [task for task in tasks if task.is_completed]
+
+    return render_template("home.html", pending_tasks=pending_tasks, completed_tasks=completed_tasks)
+    
 
 @app.route("/logout")
 def logout():
@@ -115,7 +120,7 @@ def logout():
 
 @app.route("/tasks/new", methods=["POST"])
 def create_task():
-    if "username" in session:
+    if user := get_user():
         task_desc = request.form["task"]
         date_due = request.form.get("date_due")  # e.g., "2025-08-04"
         time_due = request.form.get("time_due")  # e.g., "14:30"
@@ -134,10 +139,6 @@ def create_task():
             except ValueError:
                 due_datetime = None  # Handle invalid input as needed
 
-        # Get user
-        username = session.get("username")
-        user = User.query.filter_by(username=username).first()
-
         # Create and save the task
         if user and task_desc:
             new_task = Task()
@@ -150,6 +151,50 @@ def create_task():
             
             db.session.add(new_task)
             db.session.commit()
+
+    return redirect("/")
+
+
+@app.route("/tasks/<int:task_id>/complete", methods=["POST"])
+def complete_task(task_id):
+    if user := get_user():
+        task = Task.query.filter_by(id=task_id, user_id=user.id).first()
+        if task:
+            task.completed_at = datetime.now()
+            db.session.commit()
+
+    return redirect("/")
+
+
+@app.route("/tasks/<int:task_id>/delete", methods=["POST"])
+def delete_task(task_id):
+    if user := get_user():
+        task = Task.query.filter_by(id=task_id, user_id=user.id).first()
+        if task:
+            db.session.delete(task)
+            db.session.commit()
+
+    return redirect("/")
+
+
+@app.route("/tasks/<int:task_id>/reopen", methods=["POST"])
+def reopen_task(task_id):
+    if user := get_user():
+        task = Task.query.filter_by(id=task_id, user_id=user.id).first()
+        if task:
+            task.completed_at = None
+            db.session.commit()
+
+    return redirect("/")
+
+
+@app.route("/tasks/clear/", methods=["POST"])
+def clear_completed_tasks():
+    if user := get_user():
+        all_tasks = Task.query.filter_by(user_id=user.id).all()
+        for task in all_tasks:
+            db.session.delete(task)
+        db.session.commit()
 
     return redirect("/")
 
