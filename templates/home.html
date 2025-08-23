@@ -6,10 +6,16 @@
   <title>Todo App - Welcome</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
+    /* Importing the chosen font family */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
     /* Reset and base styles */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      border-radius: 16px;
       font-family: 'Segoe UI', sans-serif;
       background: url('uu.png') no-repeat center center/cover;
       min-height: 115vh;
@@ -20,16 +26,25 @@
     }
 
     main {
-      background-color: #a6cdfeb0;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-      width: 100%;
-      max-width: 800px;
-      z-index: 2;
-    }
+   background: url('it.webp') no-repeat center center/cover;
+  backdrop-filter: blur(3px);           /* reduce blur */
+  -webkit-backdrop-filter: blur(3px);   /* Safari support */
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  overflow: hidden;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 30px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+
 
     h1 {
+      color: #2B49F3;
       font-size: 2rem;
       line-height: 1.2;
       text-align: left;
@@ -59,9 +74,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background-color: #fefefe;
+      background-color: #D6E4FF;
       padding: 0.75rem 1rem;
       border-radius: 8px;
+      color: #333333;
       box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
 
@@ -69,22 +85,22 @@
 
     .timestamp { display: block; font-size: 0.8rem; color: #666; margin-top: 0.25rem; }
 
-    .info-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #555; }
+    .info-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #2B49F3; }
 
     .add-task-wrapper { display: flex; justify-content: flex-end; margin-top: 2rem; }
 
     .add-btn {
-      display: flex; align-items: center; gap: 0.5rem; background-color: #333;
+      display: flex; align-items: center; gap: 0.5rem; background-color: #2B49F3;
       color: white; padding: 0.75rem 1rem; border: none; border-radius: 24px;
       cursor: pointer; font-size: 1rem; transition: width 0.3s ease, padding 0.3s ease, background 0.3s ease;
       white-space: nowrap; overflow: hidden; width: 48px;
     }
 
     .add-btn .text { opacity: 0; transition: opacity 0.2s ease, margin 0.3s ease; margin-left: 0; }
-    .add-btn:hover { width: auto; padding-right: 1.5rem; }
+    .add-btn:hover { width: auto; padding-right: 1.5rem; background-color: #1A3ACB; }
     .add-btn:hover .text { opacity: 1; margin-left: 0.5rem; }
 
-    .todo-item.completed label { color: #aaa; text-decoration: line-through; }
+    .todo-item.completed label { color: #888888; text-decoration: line-through; }
 
     .todo-item input[type="checkbox"] {
       appearance: none; width: 20px; height: 20px; border: 2px solid #888; border-radius: 50%;
@@ -107,7 +123,7 @@
     }
 
     .todo-header h1 { font-size: 2rem; flex-shrink: 0; margin-right: auto; }
-    .filter-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #444; flex-shrink: 0; }
+    .filter-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #2B49F3; flex-shrink: 0; }
 
         
     .search-bar {
@@ -116,9 +132,10 @@
     }
 
     .search-bar input {
+      border: 1px solid #E0E0E0;
       width: 100%; /* fill the container */
       padding: 0.5rem 0.5rem 0.5rem 2rem; /* leave space for the icon */
-      border: 1px solid #ccc;
+      color: #333333;
       border-radius: 6px;
     }
 
@@ -127,17 +144,98 @@
       left: 0.5rem; /* icon on the left */
       top: 50%;
       transform: translateY(-50%);
-      color: #888;
+      color: #4A90E2;
       pointer-events: none;
     }
 
-    .login-icon {
-    display: block;
-    width: 90px;
-    height: 90px;
-    border-radius: 50px;
-    margin: 0 auto 15px auto;
-    }
+     .login-icon {
+  position: absolute;
+  top: 1rem;   /* distance from top */
+  right: 1rem; /* distance from right */
+  width: 20%;  /* adjust size as needed */
+  height: auto;
+  z-index: 100; /* keep it on top of other elements */
+}
+
+
+    /* Mobile-first adjustments */
+@media (max-width: 600px) {
+  body {
+    padding: 1rem;
+    height: auto; /* allow scroll if needed */
+  }
+
+  main {
+    padding: 1rem;
+    margin: 0;
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  .todo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .todo-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .search-bar {
+    width: 100%; /* full width for search */
+  }
+
+  .add-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .todo-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .task-info-card {
+    width: 90%; /* make it fluid */
+    max-width: 350px;
+  }
+
+  .section-title {
+    font-size: 1rem;
+  }
+}
+
+/* Extra small devices (portrait phones <400px) */
+@media (max-width: 400px) {
+  .todo-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .filter-btn {
+    font-size: 1.2rem;
+  }
+
+  .add-btn {
+    padding: 0.6rem;
+  }
+}
+
+/* Applying the font and color to subtitles */
+h2 {
+  font-family: 'Poppins', sans-serif;
+  color: #1A3ACB;       /* Captivating, darker blue */
+  font-weight: 600;      /* Bold for emphasis */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.15); /* subtle shadow */
+}
+
+
+h2:hover {
+  color: #4A90E2; /* Accent blue on hover */
+}
+
 
   </style>
 </head>
