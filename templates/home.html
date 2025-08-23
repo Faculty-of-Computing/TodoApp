@@ -17,7 +17,7 @@
       -moz-osx-font-smoothing: grayscale;
       border-radius: 16px;
       font-family: 'Segoe UI', sans-serif;
-      background: url('uu.png') no-repeat center center/cover;
+      background: url("{{ url_for('static', filename='images/uu.png') }}") no-repeat center center/cover;
       min-height: 115vh;
       display: flex;
       justify-content: center;
@@ -26,7 +26,7 @@
     }
 
     main {
-   background: url('it.webp') no-repeat center center/cover;
+  background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
   backdrop-filter: blur(3px);           /* reduce blur */
   -webkit-backdrop-filter: blur(3px);   /* Safari support */
   padding: 2rem;
@@ -243,7 +243,7 @@ h2:hover {
   <main>
       <header class="todo-header">
     <h1>Welcome, {{ session.username }}</h1>
-    <img src="do.png" alt="To-Do Icon" class="login-icon" />
+    <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
     <button class="filter-btn" aria-label="Filter tasks"><i class="fa-solid fa-filter"></i></button>
     <div class="search-bar">
       <input type="text" placeholder="Search tasks..." />

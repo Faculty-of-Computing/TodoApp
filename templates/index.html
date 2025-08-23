@@ -15,7 +15,7 @@
    body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: url('uu.png') no-repeat center center/cover;
+ background: url("{{ url_for('static', filename='images/uu.png') }}") no-repeat center center/cover;
   font-family: 'Inter', sans-serif;   /* 👈 Use Inter everywhere by default */
   background-color: #f7f7f7;
   color: #333;
@@ -152,7 +152,7 @@
 </head>
 <body>
   <main role="main">
-    <img src="do.png" alt="To-Do Icon" class="login-icon" />
+    <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
     <h1>DO IT</h1>
     <p>Let’s organize your day together</p>
     <form id="usernameForm" method="post" aria-label="Username Form">

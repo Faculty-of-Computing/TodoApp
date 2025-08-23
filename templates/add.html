@@ -27,7 +27,7 @@
     }
 
     main {
-  background: url('it.webp') no-repeat center center/cover;
+  background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
   backdrop-filter: blur(3px);           /* reduce blur */
   -webkit-backdrop-filter: blur(3px);   /* Safari support */
   padding: 2rem;
@@ -494,7 +494,7 @@ h2:hover {
       <header class="todo-header">
     <h1>Welcome, {{ session.username }}</h1>
     <button class="filter-btn" aria-label="Filter tasks"><i class="fa-solid fa-filter"></i></button>
-    <img src="do.png" alt="To-Do Icon" class="login-icon" />
+    <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
     <div class="search-bar">
       <input type="text" placeholder="Search tasks..." />
       <span class="search-icon"><i class="fas fa-search text-gray-500"></i></span>
