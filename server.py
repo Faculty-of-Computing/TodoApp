@@ -22,12 +22,10 @@ app.secret_key = 'your-secret-key'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-
 class TaskPriority(Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
-
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +37,6 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
-
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -69,7 +66,6 @@ def generate_unique_username(base_username):
         username = f"{base_username}{suffix}"
     return username
 
-
 def get_user():
     if "username" in session:
         return User.query.filter_by(username=session["username"]).first()
@@ -79,8 +75,43 @@ def get_user():
 def add_page():
     user = get_user()
     if not user:
-        return redirect("/")  # redirect if no user in session
-    return render_template("add.html")
+        return redirect("/")
+
+    task_id = request.args.get("task_id")
+    task = None
+    if task_id:
+        task = Task.query.filter_by(id=task_id, user_id=user.id).first()
+
+    return render_template("add.html", task=task)
+
+@app.route("/tasks/<int:task_id>/update", methods=["POST"])
+def update_task(task_id):
+    if user := get_user():
+        task = Task.query.filter_by(id=task_id, user_id=user.id).first()
+        if not task:
+            return redirect("/")
+
+        task.task = request.form["task"]
+        task.tags = request.form.get("tags")
+        priority = request.form.get("priority")
+        task.priority = TaskPriority(priority) if priority else TaskPriority.MEDIUM
+
+        date_due = request.form.get("date_due")
+        time_due = request.form.get("time_due")
+        if date_due:
+            try:
+                if time_due:
+                    task.due_date = datetime.strptime(f"{date_due} {time_due}", "%Y-%m-%d %H:%M")
+                else:
+                    task.due_date = datetime.strptime(date_due, "%Y-%m-%d")
+            except ValueError:
+                task.due_date = None
+        else:
+            task.due_date = None
+
+        db.session.commit()
+
+    return redirect("/")
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -89,41 +120,53 @@ def homepage():
 
     if request.method == "POST":
         username = request.form.get("username", None)
-
         if username:
             user = User.query.filter_by(username=username).first()
             if not user:
-                user = User()
-                user.username = username
+                user = User(username=username)
                 db.session.add(user)
                 db.session.commit()
-
             session["username"] = username
-
         else:
             error_text = "Username not present"
 
     user = get_user()
-
     if not user:
         error_text = "User not found"
         return render_template("index.html", error_text=error_text)
-    
-    # Get all user tasks    
-    tasks = Task.query.filter_by(user_id=user.id).all()
+
+    # --- SEARCH & FILTER ---
+    search_query = request.args.get("search", "").strip()
+    filter_query = request.args.get("filter", "").strip()
+
+    tasks_query = Task.query.filter_by(user_id=user.id)
+
+    # Filter by priority
+    if filter_query in ["low", "medium", "high"]:
+        tasks_query = tasks_query.filter(Task.priority == TaskPriority(filter_query))
+
+    # Filter by completed/pending
+    elif filter_query == "completed":
+        tasks_query = tasks_query.filter(Task.completed_at.isnot(None))
+    elif filter_query == "pending":
+        tasks_query = tasks_query.filter(Task.completed_at.is_(None))
+
+    # Search by task name
+    if search_query:
+        tasks_query = tasks_query.filter(Task.task.ilike(f"%{search_query}%"))
+
+    tasks = tasks_query.order_by(Task.created_at.desc()).all()
 
     pending_tasks = [task for task in tasks if not task.is_completed]
     completed_tasks = [task for task in tasks if task.is_completed]
 
     return render_template("home.html", pending_tasks=pending_tasks, completed_tasks=completed_tasks)
-    
 
 @app.route("/logout")
 def logout():
     session.pop("username")
 
     return redirect("/")
-
 
 @app.route("/tasks/new", methods=["POST"])
 def create_task():
@@ -161,7 +204,6 @@ def create_task():
 
     return redirect("/")
 
-
 @app.route("/tasks/<int:task_id>/complete", methods=["POST"])
 def complete_task(task_id):
     if user := get_user():
@@ -171,7 +213,6 @@ def complete_task(task_id):
             db.session.commit()
 
     return redirect("/")
-
 
 @app.route("/tasks/<int:task_id>/delete", methods=["POST"])
 def delete_task(task_id):
@@ -183,7 +224,6 @@ def delete_task(task_id):
 
     return redirect("/")
 
-
 @app.route("/tasks/<int:task_id>/reopen", methods=["POST"])
 def reopen_task(task_id):
     if user := get_user():
@@ -193,7 +233,6 @@ def reopen_task(task_id):
             db.session.commit()
 
     return redirect("/")
-
 
 @app.route("/tasks/clear/", methods=["POST"])
 def clear_completed_tasks():
@@ -205,6 +244,6 @@ def clear_completed_tasks():
 
     return redirect("/")
 
-
 if __name__ == "__main__":
     app.run(debug=True)
+

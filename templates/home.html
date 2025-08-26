@@ -41,7 +41,6 @@
   position: relative;
 }
 
-
     h1 {
       color: #2B49F3;
       font-size: 2rem;
@@ -129,26 +128,26 @@
       font-size: 2rem;
     }
 
-        .search-bar {
-      position: relative; /* Make the icon position relative to this container */
-      width: 200px;       /* Or whatever width you want */
-    }
+          .search-bar {
+        position: relative; /* container relative for absolute icon */
+        width: 200px;       /* or flex: 1 for responsive */
+      }
 
-    .search-bar input {
-      width: 100%;
-      padding: 0.5rem 0.5rem 0.5rem 2rem; /* Leave space on the left for icon */
-      border: 1px solid #E0E0E0;
-      border-radius: 6px;
-    }
+      .search-bar input {
+        width: 100%;
+        padding: 0.5rem 0.5rem 0.5rem 2rem; /* leave space for icon */
+        border: 1px solid #E0E0E0;
+        border-radius: 6px;
+      }
 
-    .search-bar .search-icon {
-      position: absolute;
-      left: 0.5rem;         /* space from left edge */
-      top: 50%;
-      transform: translateY(-50%);
-      color: #4A90E2;
-      pointer-events: none;  /* icon won’t block clicks */
-    }
+      .search-bar .search-icon {
+        position: absolute;  /* absolute inside the container */
+        left: 0.6rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #4A90E2;
+        pointer-events: none; /* icon won’t block clicks */
+      }
 
      .login-icon {
   position: absolute;
@@ -250,13 +249,15 @@ h2:hover {
       <h1>Welcome, {{ session.username }}</h1>
       
       <!-- Search bar below username -->
-      <div class="search-bar">
-        <input type="text" placeholder="Search tasks..." />
-        <span class="search-icon"><i class="fas fa-search text-gray-500"></i></span>
-      </div>
+      <form method="GET" action="/" class="search-bar">
+   <i class="fas fa-search search-icon"></i>
+    <input type="text" name="search" placeholder="Search tasks..." value="{{ request.args.get('search', '') }}"/>
+   </form>
+
 
       <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
       <div class="filter-wrapper">
+
   <form method="GET" action="/">
     <select name="filter" onchange="this.form.submit()">
       <option value="">-- Filter Tasks --</option>
@@ -268,56 +269,66 @@ h2:hover {
     </select>
   </form>
 </div>
-
     </header>
 
-      <div class="add-task-wrapper">
-      <a href="{{ url_for('add_page') }}">
-        <button class="add-btn" aria-label="Add Task">
-          <span class="plus"><i class="fa-solid fa-plus"></i></span>
-          <span class="text">Add Task</span>
-        </button>
-      </a>
-    </div>
-
-
-    <section>
-      <h2>Pending Tasks</h2>
-      <ul class="todo-list">
-        {% if pending_tasks %}
-          {% for task in pending_tasks %}
-            <li class="todo-item">
-              <input type="checkbox" id="task{{ task.id }}" />
-              <label for="task{{ task.id }}">{{ task.task }}</label>
-              <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-            </li>
-          {% endfor %}
-        {% else %}
-          <li>No pending tasks</li>
-        {% endif %}
-      </ul>
-    </section>
+    <div class="add-task-wrapper">
+  <a href="{{ url_for('add_page') }}">
+    <button type="button" class="add-btn" aria-label="Add Task">
+      <span class="plus"><i class="fa-solid fa-plus"></i></span>
+      <span class="text">Add Task</span>
+    </button>
+  </a>
+</div>
 
     <section>
-      <h2>Completed Tasks</h2>
-      <ul class="todo-list">
-        {% if completed_tasks %}
-          {% for task in completed_tasks %}
-            <li class="todo-item completed">
-              <input type="checkbox" id="task{{ task.id }}" checked disabled />
-              <label for="task{{ task.id }}">
-                {{ task.task }}
-                <span class="timestamp">Completed at {{ task.completed_at }}</span>
-              </label>
-              <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-            </li>
-          {% endfor %}
-        {% else %}
-          <li>No completed tasks</li>
-        {% endif %}
-      </ul>
-    </section>
+  <h2>Pending Tasks</h2>
+  <ul class="todo-list">
+    {% if pending_tasks %}
+      {% for task in pending_tasks %}
+        <li class="todo-item">
+          <form method="POST" action="{{ url_for('complete_task', task_id=task.id) }}">
+            <input type="checkbox" id="task{{ task.id }}" onchange="this.form.submit()"/>
+            <label for="task{{ task.id }}">{{ task.task }}</label>
+          </form>
+          <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
+            <i class="fa-solid fa-circle-info"></i>
+          </button>
+        </li>
+      {% endfor %}
+    {% else %}
+      <li>No pending tasks</li>
+    {% endif %}
+  </ul>
+</section>
+
+    <section>
+  <h2>Completed Tasks</h2>
+  <ul class="todo-list">
+    {% if completed_tasks %}
+      {% for task in completed_tasks %}
+        <li class="todo-item completed">
+          <form method="POST" action="{{ url_for('reopen_task', task_id=task.id) }}">
+            <input type="checkbox" id="task{{ task.id }}" checked onchange="this.form.submit()"/>
+            <label for="task{{ task.id }}">
+              {{ task.task }}
+              <span class="timestamp">Completed at {{ task.completed_at }}</span>
+            </label>
+          </form>
+          <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
+            <i class="fa-solid fa-circle-info"></i>
+          </button>
+        </li>
+      {% endfor %}
+    {% else %}
+      <li>No completed tasks</li>
+    {% endif %}
+  </ul>
+</section>
   </main>
 </body>
 </html>
+
+
+
+
 
