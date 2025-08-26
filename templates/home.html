@@ -271,14 +271,12 @@ h2:hover {
 </div>
     </header>
 
-    <div class="add-task-wrapper">
-  <a href="{{ url_for('add_page') }}">
-    <button type="button" class="add-btn" aria-label="Add Task">
-      <span class="plus"><i class="fa-solid fa-plus"></i></span>
-      <span class="text">Add Task</span>
-    </button>
-  </a>
-</div>
+   <div class="add-task-wrapper">
+      <a href="{{ url_for('add_page') }}" class="add-btn" aria-label="Add Task">
+        <span class="plus"><i class="fa-solid fa-plus"></i></span>
+        <span class="text">Add Task</span>
+      </a>
+    </div>
 
     <section>
   <h2>Pending Tasks</h2>
