@@ -10,19 +10,23 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      border-radius: 16px;
-      font-family: 'Segoe UI', sans-serif;
-      background: url("{{ url_for('static', filename='images/uu.png') }}") no-repeat center center/cover;
-      min-height: 115vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-    }
+        body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;               /* remove default margin */
+  padding: 0;              /* remove padding */
+  min-height: 100vh;       /* full viewport height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  /* Proper responsive background */
+  background-image: url("{{ url_for('static', filename='images/uu.png') }}");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;   /* ensures full coverage */
+}
     main {
       background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
       backdrop-filter: blur(3px);
@@ -64,10 +68,26 @@
     }
 
     .todo-header { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; padding-top: 0.5rem; }
-    .search-bar { position: relative; width: 200px; }
-    .search-bar input { width: 100%; padding: 0.5rem 0.5rem 0.5rem 2rem; border: 1px solid #E0E0E0; border-radius: 6px; }
-    .search-bar .search-icon { position: absolute; left: 0.5rem; top: 50%; transform: translateY(-50%); color: #4A90E2; pointer-events: none; }
+        .search-bar {
+        position: relative; /* container relative for absolute icon */
+        width: 200px;       /* or flex: 1 for responsive */
+      }
 
+        .search-bar input {
+        width: 100%;
+        padding: 0.3rem 0.3rem 0.3rem 1.6rem; /* leave space for icon */
+        border: 1px solid #E0E0E0;
+        border-radius: 6px;
+      }
+
+      .search-bar .search-icon {
+        position: absolute;  /* absolute inside the container */
+        left: 0.3rem;
+        top: 39%;
+        transform: translateY(-50%);
+        color: #4A90E2;
+        pointer-events: none; /* icon won’t block clicks */
+      }
     .login-icon { position: absolute; top: 1rem; right: 1rem; width: 20%; height: auto; z-index: 100; }
 
     .todo-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; padding: 0; margin: 0 0 2rem; }
@@ -98,88 +118,185 @@
     .field-row select { flex: 1.5; padding: 5px; border-radius: 5px; border: 1px solid #ccc; }
     .buttons { display: flex; justify-content: space-between; margin-top: 20px; }
     .update-btn { background-color: #007BFF; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
-    .delete-btn { background-color: #DC3545; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
+    .delete-btn { background-color: #DC3545; color: white; padding: 8px 16px; margin-right: 17px; border: none; border-radius: 6px; cursor: pointer; }
     .close-btn { position: absolute; bottom: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; }
 
-    @media (max-width: 600px) {
-      main { padding: 1rem; margin: 0; border-radius: 8px; }
-      .todo-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
-      .todo-header h1 { font-size: 1.8rem; }
-      .search-bar { width: 100%; }
-      .add-btn { width: 100%; justify-content: center; font-size: 1rem; }
-      .todo-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-      .task-info-card { width: 90%; max-width: 350px; }
-    }
+
+/*RESPONSIVENESS */
+ @media (max-width: 768px) { 
+  main { padding: 1.5rem; border-radius: 20px; max-width: 90%; } 
+  .login-icon { width: 15%; } } 
+
+   
+/* Prevent Add Task button expansion on mobile */
+@media (max-width: 600px) {
+  .add-btn {
+    width: 48px !important;
+    padding: 0.75rem !important;
+  }
+  .add-btn .text {
+    display: none !important;
+  }
+  .add-btn:hover {
+    width: 48px !important;
+    padding: 0.75rem !important;
+    background-color: #2B49F3;
+  }
+
+  .add-task-wrapper {
+    position: static;       
+    margin-top: 1rem;       
+    display: flex;
+    justify-content: flex-end; 
+  }
+}
+
+/* RESPONSIVENESS */
+@media (max-width: 1024px) {
+  .task-info-card { width: 350px; padding: 12px; }
+}
+
+@media (max-width: 768px) {
+  .task-info-card { width: 90%; padding: 10px; }
+  .task-title, .field-row input, .field-row select { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .task-info-card { width: 95%; padding: 10px; }
+  .task-title { font-size: 0.95rem; padding: 5px; }
+  .field-row label { font-size: 0.85rem; }
+  .field-row input,
+  .field-row select { font-size: 0.9rem; padding: 4px 6px; }
+  .update-btn, .delete-btn { font-size: 0.9rem; padding: 7px 0; }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 1024px) {
+  body {
+    background-size: auto 100%;  
+    background-position: cente; 
+    background-repeat: no-repeat;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    background-size: auto 100%;      /* full height, width adjusts */
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    background-size: auto 100%;      /* full height */
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (max-width: 480px) {
+  .delete-btn {
+    margin-right: 30px;
+  }
+}
+
+
+/* Applying the font and color to subtitles */
+h2 {
+  font-family: 'Poppins', sans-serif;
+  color: #1A3ACB;       /* Captivating, darker blue */
+  font-weight: 600;      /* Bold for emphasis */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.15); /* subtle shadow */
+}
+
+h2:hover {
+  color: #4A90E2; /* Accent blue on hover */
+}
+
+
   </style>
 </head>
 <body>
   <main>
-    <header class="todo-header">
+
+       <header class="todo-header">
       <h1>Welcome, {{ session.username }}</h1>
-      <div class="search-bar">
-        <input type="text" placeholder="Search tasks..." />
-        <span class="search-icon"><i class="fas fa-search"></i></span>
-      </div>
+      
+      <!-- Search bar below username -->
+      <form method="GET" action="/" class="search-bar">
+   <i class="fas fa-search search-icon"></i>
+    <input type="text" name="search" placeholder="Search tasks..." value="{{ request.args.get('search', '') }}"/>
+   </form>
+
+
       <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
       <div class="filter-wrapper">
-        <form method="GET" action="/">
-          <select name="filter" onchange="this.form.submit()">
-            <option value="">-- Filter Tasks --</option>
-            <option value="pending" {% if request.args.get('filter') == 'pending' %}selected{% endif %}>Pending</option>
-            <option value="completed" {% if request.args.get('filter') == 'completed' %}selected{% endif %}>Completed</option>
-            <option value="high" {% if request.args.get('filter') == 'high' %}selected{% endif %}>High Priority</option>
-            <option value="medium" {% if request.args.get('filter') == 'medium' %}selected{% endif %}>Medium Priority</option>
-            <option value="low" {% if request.args.get('filter') == 'low' %}selected{% endif %}>Low Priority</option>
-          </select>
-        </form>
-      </div>
+
+  <form method="GET" action="/">
+    <select name="filter" onchange="this.form.submit()">
+      <option value="">-- Filter Tasks --</option>
+      <option value="pending" {% if request.args.get('filter') == 'pending' %}selected{% endif %}>Pending</option>
+      <option value="completed" {% if request.args.get('filter') == 'completed' %}selected{% endif %}>Completed</option>
+      <option value="high" {% if request.args.get('filter') == 'high' %}selected{% endif %}>High Priority</option>
+      <option value="medium" {% if request.args.get('filter') == 'medium' %}selected{% endif %}>Medium Priority</option>
+      <option value="low" {% if request.args.get('filter') == 'low' %}selected{% endif %}>Low Priority</option>
+    </select>
+  </form>
+</div>
     </header>
 
-    <div class="add-task-wrapper">
-      <a href="{{ url_for('add_page') }}">
-        <button class="add-btn" aria-label="Add Task">
-          <span class="plus"><i class="fa-solid fa-plus"></i></span>
-          <span class="text">Add Task</span>
-        </button>
+   <div class="add-task-wrapper">
+      <a href="{{ url_for('add_page') }}" class="add-btn" aria-label="Add Task">
+        <span class="plus"><i class="fa-solid fa-plus"></i></span>
+        <span class="text">Add Task</span>
       </a>
     </div>
 
     <section>
-      <h2>Pending Tasks</h2>
-      <ul class="todo-list">
-        {% if pending_tasks %}
-          {% for task in pending_tasks %}
-            <li class="todo-item">
-              <input type="checkbox" id="task{{ task.id }}" />
-              <label for="task{{ task.id }}">{{ task.task }}</label>
-              <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-            </li>
-          {% endfor %}
-        {% else %}
-          <li>No pending tasks</li>
-        {% endif %}
-      </ul>
-    </section>
+  <h2>Pending Tasks</h2>
+  <ul class="todo-list">
+    {% if pending_tasks %}
+      {% for task in pending_tasks %}
+        <li class="todo-item">
+          <form method="POST" action="{{ url_for('complete_task', task_id=task.id) }}">
+            <input type="checkbox" id="task{{ task.id }}" onchange="this.form.submit()"/>
+            <label for="task{{ task.id }}">{{ task.task }}</label>
+          </form>
+          <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
+            <i class="fa-solid fa-circle-info"></i>
+          </button>
+        </li>
+      {% endfor %}
+    {% else %}
+      <li>No pending tasks</li>
+    {% endif %}
+  </ul>
+</section>
 
     <section>
-      <h2>Completed Tasks</h2>
-      <ul class="todo-list">
-        {% if completed_tasks %}
-          {% for task in completed_tasks %}
-            <li class="todo-item completed">
-              <input type="checkbox" id="task{{ task.id }}" checked disabled />
-              <label for="task{{ task.id }}">
-                {{ task.task }}
-                <span class="timestamp">Completed at {{ task.completed_at }}</span>
-              </label>
-              <button class="info-btn" aria-label="Task info"><i class="fa-solid fa-circle-info"></i></button>
-            </li>
-          {% endfor %}
-        {% else %}
-          <li>No completed tasks</li>
-        {% endif %}
-      </ul>
-    </section>
+  <h2>Completed Tasks</h2>
+  <ul class="todo-list">
+    {% if completed_tasks %}
+      {% for task in completed_tasks %}
+        <li class="todo-item completed">
+          <form method="POST" action="{{ url_for('reopen_task', task_id=task.id) }}">
+            <input type="checkbox" id="task{{ task.id }}" checked onchange="this.form.submit()"/>
+            <label for="task{{ task.id }}">
+              {{ task.task }}
+              <span class="timestamp">Completed at {{ task.completed_at }}</span>
+            </label>
+          </form>
+          <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
+            <i class="fa-solid fa-circle-info"></i>
+          </button>
+        </li>
+      {% endfor %}
+    {% else %}
+      <li>No completed tasks</li>
+    {% endif %}
+  </ul>
+</section>
 <!-- Overlay / Add Task Fields (Corrected) -->
 <form method="POST" action="{% if task %}{{ url_for('update_task', task_id=task.id) }}{% else %}{{ url_for('create_task') }}{% endif %}">
   <div class="task-overlay">

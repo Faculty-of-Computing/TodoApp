@@ -13,33 +13,38 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      border-radius: 16px;
-      font-family: 'Segoe UI', sans-serif;
-      background: url("{{ url_for('static', filename='images/uu.png') }}") no-repeat center center/cover;
-      min-height: 115vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;               /* remove default margin */
+  padding: 0;              /* remove padding */
+  min-height: 115vh;      /* viewport height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Proper responsive background */
+  background-image: url("{{ url_for('static', filename='images/uu.png') }}");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;   /* ensures full coverage */
+}
+
+main {
+      background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin: 2rem auto;
+      overflow: hidden;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      position: relative;
     }
 
-    main {
-  background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
-  backdrop-filter: blur(3px);           /* reduce blur */
-  -webkit-backdrop-filter: blur(3px);   /* Safari support */
-  padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  margin: 2rem auto;
-  overflow: hidden;
-  width: 100%;
-  max-width: 800px;
-  border-radius: 30px;
-  box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  position: relative;
-}
 
     h1 {
       color: #2B49F3;
@@ -49,22 +54,28 @@
       margin-bottom: 2rem;
     }
 
-    @media (min-width: 768px) {
-      h1 { font-size: 3rem; }
-    }
-
     label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      transition: border-color 0.3s ease;
-    }
+          input[type="text"]:focus { outline: none; border-color: #333; }
+        input[type="text"], input[type="date"], input[type="time"], select {
+        width: 100%;
+        max-width: 300px;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background-color: #f9f9f9;
+        color: #333;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+      }
 
-    input[type="text"]:focus { outline: none; border-color: #333; }
+      select:focus {
+        border-color: #3f51b5;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(63,81,181,0.2);
+      }
 
     .todo-list { list-style: none; padding: 0; margin: 0 0 2rem; display: flex; flex-direction: column; gap: 1rem; }
 
@@ -133,17 +144,17 @@
         width: 200px;       /* or flex: 1 for responsive */
       }
 
-      .search-bar input {
+    .search-bar input {
         width: 100%;
-        padding: 0.5rem 0.5rem 0.5rem 2rem; /* leave space for icon */
+        padding: 0.3rem 0.3rem 0.3rem 1.6rem; /* leave space for icon */
         border: 1px solid #E0E0E0;
         border-radius: 6px;
       }
 
       .search-bar .search-icon {
         position: absolute;  /* absolute inside the container */
-        left: 0.6rem;
-        top: 50%;
+        left: 0.3rem;
+        top: 38%;
         transform: translateY(-50%);
         color: #4A90E2;
         pointer-events: none; /* icon won’t block clicks */
@@ -157,77 +168,64 @@
   height: auto;
   z-index: 100; /* keep it on top of other elements */
 }
+  
+/* RESPONSIVENESS */ 
+   /* Mobile-first adjustments */
+@media (max-width: 768px) {
+      main { padding: 1.5rem; border-radius: 20px; max-width: 90%; }
+      .login-icon { width: 15%; }
+    }
 
-    /* Mobile-first adjustments */
+   
+/* Prevent Add Task button expansion on mobile */
 @media (max-width: 600px) {
+  .add-btn {
+    width: 48px !important;
+    padding: 0.75rem !important;
+  }
+  .add-btn .text {
+    display: none !important;
+  }
+  .add-btn:hover {
+    width: 48px !important;
+    padding: 0.75rem !important;
+    background-color: #2B49F3;
+  }
+
+  .add-task-wrapper {
+    position: static;       /* No floating */
+    margin-top: 1rem;       /* space below filter */
+    display: flex;
+    justify-content: flex-end; 
+  }
+}
+
+  /* Mobile responsiveness */
+@media (max-width: 1024px) {
   body {
-    padding: 1rem;
-    height: auto; /* allow scroll if needed */
-  }
-
-  main {
-    padding: 1rem;
-    margin: 0;
-    width: 100%;
-    border-radius: 8px;
-  }
-
-  .todo-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .todo-header h1 {
-    font-size: 1.8rem;
-  }
-
-  .search-bar {
-    width: 100%; /* full width for search */
-  }
-
-  .add-btn {
-    width: 100%;
-    justify-content: center;
-    font-size: 1rem;
-  }
-
-  .todo-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .task-info-card {
-    width: 90%; /* make it fluid */
-    max-width: 350px;
-  }
-
-  .section-title {
-    font-size: 1rem;
+    background-size: auto 100%;   
+    background-position: center; 
+    background-repeat: no-repeat;
   }
 }
 
-/* Extra small devices (portrait phones <400px) */
-@media (max-width: 400px) {
-  .todo-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .filter-wrapper select {
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 0.9rem;
-    cursor: pointer;
-    background-color: #fff;
-    color: #333;
-}
-
-  .add-btn {
-    padding: 0.6rem;
+@media (max-width: 768px) {
+  body {
+    background-size: auto 100%;      
+    background-position: center;
+    background-repeat: no-repeat;
   }
 }
+
+@media (max-width: 480px) {
+  body {
+    background-size: auto 100%;      /* full height */
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+
 
 /* Applying the font and color to subtitles */
 h2 {
@@ -325,8 +323,3 @@ h2:hover {
   </main>
 </body>
 </html>
-
-
-
-
-
