@@ -41,6 +41,8 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
       width: 100%;
       max-width: 400px;
+      position: center;
+      margin-top: -5rem;
     }
     p {
     text-align: center;
@@ -148,6 +150,34 @@
         font-size: 1.1rem;
       }
     }
+
+    /* 🔹 Mobile-specific full background image */
+@media (max-width: 768px) {
+  body {
+    background-image: url("{{ url_for('static', filename='images/u.png') }}") !important;
+    background-size: cover;          /* Make image cover entire screen */
+    background-position: center;     /* Center the image */
+    background-repeat: no-repeat;    /* Prevent tiling */
+    background-attachment: fixed;    /* Keeps background fixed */
+    min-height: 100vh;               /* Always fill viewport height */
+    width: 100%;                     /* Full width */
+    overflow: hidden;                /* Avoid horizontal scrollbars */
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    background-image: url("{{ url_for('static', filename='images/u.png') }}") !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 115vh;
+    width: 100%;
+  }
+}
+
+
+
   </style>
 </head>
 <body>

@@ -36,7 +36,7 @@
       margin: 2rem auto;
       overflow: hidden;
       width: 100%;
-      max-width: 800px;
+      max-width: 680px;
       border-radius: 30px;
       border: 1px solid rgba(255,255,255,0.2);
       position: relative;
@@ -48,7 +48,7 @@
 
     label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
     input[type="text"], input[type="date"], input[type="time"], select {
-      width: 100%;
+      width: 90%;
       max-width: 300px;
       padding: 0.5rem 0.75rem;
       border: 1px solid #ccc;
@@ -69,13 +69,13 @@
 
     .todo-header { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; padding-top: 0.5rem; }
         .search-bar {
-        position: relative; /* container relative for absolute icon */
-        width: 200px;       /* or flex: 1 for responsive */
+        position: relative; 
+        width: 200px;      
       }
 
         .search-bar input {
         width: 100%;
-        padding: 0.3rem 0.3rem 0.3rem 1.6rem; /* leave space for icon */
+        padding: 0.3rem 0.3rem 0.3rem 1.6rem; 
         border: 1px solid #E0E0E0;
         border-radius: 6px;
       }
@@ -86,8 +86,17 @@
         top: 39%;
         transform: translateY(-50%);
         color: #4A90E2;
-        pointer-events: none; /* icon won’t block clicks */
+        pointer-events: none; 
       }
+
+          .filter-wrapper select {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      border: 1px solid #E0E0E0;
+      max-width: 150px;
+      cursor: pointer;
+        }
     .login-icon { position: absolute; top: 1rem; right: 1rem; width: 20%; height: auto; z-index: 100; }
 
     .todo-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; padding: 0; margin: 0 0 2rem; }
@@ -124,8 +133,9 @@
 
 /*RESPONSIVENESS */
  @media (max-width: 768px) { 
-  main { padding: 1.5rem; border-radius: 20px; max-width: 90%; } 
-  .login-icon { width: 15%; } } 
+    main { padding: 1.5rem; border-radius: 20px; max-width: 80%; }
+    .login-icon { width: 20%; }
+    }
 
    
 /* Prevent Add Task button expansion on mobile */
@@ -171,6 +181,32 @@
 }
 
 /* Mobile responsiveness */
+
+   /* 🔹 Mobile-specific full background image */
+@media (max-width: 768px) {
+  body {
+    background-image: url("{{ url_for('static', filename='images/u.png') }}") !important;
+    background-size: cover;          
+    background-position: center;   
+    background-repeat: no-repeat;   
+    background-attachment: fixed;    
+    min-height: 100vh;               
+    width: 100%;                     
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    background-image: url("{{ url_for('static', filename='images/u.png') }}") !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 115vh;
+    width: 100%;
+  }
+}
+
+
 @media (max-width: 1024px) {
   body {
     background-size: auto 100%;  

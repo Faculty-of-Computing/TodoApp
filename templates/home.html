@@ -16,14 +16,14 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Segoe UI', sans-serif;
-  margin: 0;               /* remove default margin */
-  padding: 0;              /* remove padding */
-  min-height: 115vh;      /* viewport height */
+  margin: 0;               
+  padding: 0;              
+  min-height: 115vh;     
   display: flex;
   justify-content: center;
   align-items: center;
 
-  /* Proper responsive background */
+  /*responsive background */
   background-image: url("{{ url_for('static', filename='images/uu.png') }}");
   background-repeat: no-repeat;
   background-position: center center;
@@ -39,7 +39,7 @@ main {
       margin: 2rem auto;
       overflow: hidden;
       width: 100%;
-      max-width: 800px;
+      max-width: 680px;
       border-radius: 30px;
       border: 1px solid rgba(255,255,255,0.2);
       position: relative;
@@ -58,7 +58,7 @@ main {
 
           input[type="text"]:focus { outline: none; border-color: #333; }
         input[type="text"], input[type="date"], input[type="time"], select {
-        width: 100%;
+        width: 90%;
         max-width: 300px;
         padding: 0.5rem 0.75rem;
         border: 1px solid #ccc;
@@ -96,10 +96,10 @@ main {
 
     .info-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #2B49F3; }
 
-    .add-task-wrapper { display: flex; justify-content: flex-end; margin-top: 2rem; }
+    .add-task-wrapper { display: flex; justify-content: flex-end; margin-top: 0.3rem; flex: 1 1 auto; }
 
     .add-btn {
-      display: flex; align-items: center; gap: 0.5rem; background-color: #2B49F3;
+      display: flex; align-items: center; gap: 0.3rem; margin-top: 0.5rem; background-color: #2B49F3;
       color: white; padding: 0.75rem 1rem; border: none; border-radius: 24px;
       cursor: pointer; font-size: 1rem; transition: width 0.3s ease, padding 0.3s ease, background 0.3s ease;
       white-space: nowrap; overflow: hidden; width: 48px;
@@ -152,28 +152,30 @@ main {
       }
 
       .search-bar .search-icon {
-        position: absolute;  /* absolute inside the container */
+        position: absolute; 
         left: 0.3rem;
         top: 38%;
         transform: translateY(-50%);
         color: #4A90E2;
-        pointer-events: none; /* icon won’t block clicks */
+        pointer-events: none; 
       }
 
-     .login-icon {
-  position: absolute;
-  top: 1rem;   /* distance from top */
-  right: 1rem; /* distance from right */
-  width: 20%;  /* adjust size as needed */
-  height: auto;
-  z-index: 100; /* keep it on top of other elements */
-}
+      .filter-wrapper select {margin-bottom: 0.1rem; padding: 0.4rem 0.6rem; font-size: 0.9rem; border-radius: 6px; border: 1px solid #E0E0E0; max-width: 150px; cursor: pointer;}
+
+        .login-icon {
+      position: absolute;
+      top: 1rem;   
+      right: 1rem; 
+      width: 20%;  
+      height: auto;
+      z-index: 100; 
+    }
   
 /* RESPONSIVENESS */ 
    /* Mobile-first adjustments */
 @media (max-width: 768px) {
-      main { padding: 1.5rem; border-radius: 20px; max-width: 90%; }
-      .login-icon { width: 15%; }
+      main { padding: 1.5rem; border-radius: 20px; max-width: 80%; }
+      .login-icon { width: 20%; }
     }
 
    
@@ -225,7 +227,31 @@ main {
   }
 }
 
+/* 🔹 Mobile-specific full background image */
+@media (max-width: 768px) {
+  body {
+    background-image: url("{{ url_for('static', filename='images/u.png') }}") !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-size: cover;          
+    background-position: center;     
+    background-repeat: no-repeat;    
+    background-attachment: fixed;   
+    min-height: 115vh;               
+    width: 95%;                   
+  }
+}
 
+@media (max-width: 480px) {
+  body {
+    background-image: url("{{ url_for('static', filename='images/u.png') }}") !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 115vh;
+    width: 95%;
+  }
+}
 
 /* Applying the font and color to subtitles */
 h2 {
