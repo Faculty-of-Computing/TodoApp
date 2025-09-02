@@ -47,25 +47,36 @@
     h2:hover { color: #4A90E2; }
 
     label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
-    input[type="text"], input[type="date"], input[type="time"], select {
-      width: 90%;
-      max-width: 300px;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      background-color: #f9f9f9;
-      color: #333;
-      transition: border 0.3s ease, box-shadow 0.3s ease;
-      margin-bottom: 1rem;
-      box-sizing: border-box;
-    }
+    
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="datetime-local"],
+        select {
+          width: 90%;
+          max-width: 300px;
+          padding: 0.5rem 0.75rem;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          font-size: 0.95rem;
+          background-color: #f9f9f9;
+          color: #333;
+          transition: border 0.3s ease, box-shadow 0.3s ease;
+          margin-bottom: 1rem;
+          box-sizing: border-box;
+        }
 
-    input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus, select:focus {
-      border-color: #3f51b5;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(63,81,181,0.2);
-    }
+        /* Same focus effect for all inputs */
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        input[type="datetime-local"]:focus,
+        select:focus {
+          border-color: #3f51b5;
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(63,81,181,0.2);
+        }
+
 
     .todo-header { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; padding-top: 0.5rem; }
         .search-bar {
@@ -334,23 +345,36 @@ h2:hover {
   </ul>
 </section>
 <!-- Overlay / Add Task Fields (Corrected) -->
-<form method="POST" action="{% if task %}{{ url_for('update_task', task_id=task.id) }}{% else %}{{ url_for('create_task') }}{% endif %}">
+<form method="POST" enctype="multipart/form-data"
+      action="{% if task %}{{ url_for('update_task', task_id=task.id) }}{% else %}{{ url_for('create_task') }}{% endif %}">
   <div class="task-overlay">
     <div class="task-info-card">
-      <a href="{{ url_for('homepage') }}" class="close-btn">&times;</a>
+      <button type="button" class="close-btn" onclick="window.location.href='{{ url_for('homepage') }}'">&times;</button>
 
-      <input type="text" name="task" class="task-title" placeholder="Task Title" value="{{ task.task if task else '' }}" required>
+      <!-- Task Title -->
+      <input type="text" name="task" class="task-title" placeholder="Task Title" 
+             value="{{ task.task if task else '' }}" required aria-label="Task Title">
 
+      <!-- Date & Time -->
       <div class="field-row">
         <label><i class="fa-solid fa-calendar"></i> Date:</label>
-        <input type="date" name="date_due" value="{{ task.due_date.strftime('%Y-%m-%d') if task and task.due_date else '' }}">
+        <input type="date" name="date_due" 
+               value="{{ task.due_date.strftime('%Y-%m-%d') if task and task.due_date else '' }}">
       </div>
-
       <div class="field-row">
         <label><i class="fa-solid fa-clock"></i> Time:</label>
-        <input type="time" name="time_due" value="{{ task.due_date.strftime('%H:%M') if task and task.due_date else '' }}">
+        <input type="time" name="time_due" 
+               value="{{ task.due_date.strftime('%H:%M') if task and task.due_date else '' }}">
       </div>
 
+      <!-- Reminder -->
+      <div class="field-row">
+        <label><i class="fa-solid fa-bell"></i> Reminder:</label>
+        <input type="datetime-local" name="reminder_datetime"
+               value="{{ task.reminder_datetime.strftime('%Y-%m-%dT%H:%M') if task and task.reminder_datetime else '' }}">
+      </div>
+
+      <!-- Priority -->
       <div class="field-row">
         <label><i class="fa-solid fa-flag"></i> Priority:</label>
         <select name="priority">
@@ -361,18 +385,30 @@ h2:hover {
         </select>
       </div>
 
+      <!-- Tags -->
       <div class="field-row">
         <label><i class="fa-solid fa-tags"></i> Tags:</label>
-        <input type="text" name="tags" value="{{ task.tags if task else '' }}">
+        <input type="text" name="tags" placeholder="e.g. Work, Urgent"
+               value="{{ task.tags if task else '' }}">
       </div>
 
-      <div class="buttons">
-        <!-- Update/Save Button -->
-        <button type="submit" class="update-btn">{% if task %}Update{% else %}Save{% endif %}</button>
+      <!-- Recurring -->
+      <div class="field-row">
+        <label><i class="fa-solid fa-repeat"></i> Repeat:</label>
+        <select name="recurring">
+          <option value="none">None</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
 
+      <!-- Buttons -->
+      <div class="buttons">
+        <button type="submit" class="update-btn">{% if task %}Update{% else %}Save{% endif %}</button>
         {% if task %}
-        <!-- Delete Button triggers separate form -->
-        <button type="submit" class="delete-btn" form="delete-form" onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
+        <button type="submit" class="delete-btn" form="delete-form"
+                onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
         {% endif %}
       </div>
     </div>
@@ -380,11 +416,9 @@ h2:hover {
 </form>
 
 {% if task %}
-<!-- Hidden Delete Form (MOVED OUTSIDE the main form) -->
 <form id="delete-form" method="POST" action="{{ url_for('delete_task', task_id=task.id) }}" style="display:none;"></form>
 {% endif %}
-
-        
+    
   </main>
 </body>
 </html>

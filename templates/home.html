@@ -302,50 +302,88 @@ h2:hover {
       </a>
     </div>
 
-    <section>
-  <h2>Pending Tasks</h2>
-  <ul class="todo-list">
-    {% if pending_tasks %}
-      {% for task in pending_tasks %}
-        <li class="todo-item">
-          <form method="POST" action="{{ url_for('complete_task', task_id=task.id) }}">
-            <input type="checkbox" id="task{{ task.id }}" onchange="this.form.submit()"/>
-            <label for="task{{ task.id }}">{{ task.task }}</label>
-          </form>
-          <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
-            <i class="fa-solid fa-circle-info"></i>
-          </button>
-        </li>
-      {% endfor %}
-    {% else %}
-      <li>No pending tasks</li>
-    {% endif %}
-  </ul>
-</section>
+<section>
+      <h2>Pending Tasks</h2>
+      <ul class="todo-list">
+        {% if pending_tasks %}
+          {% for task in pending_tasks %}
+            <li class="todo-item"
+                data-task="{{ task.task }}"
+                data-reminder="{{ task.reminder_datetime.strftime('%Y-%m-%dT%H:%M:%S') if task.reminder_datetime else '' }}">
+              <form method="POST" action="{{ url_for('complete_task', task_id=task.id) }}">
+                <input type="checkbox" id="task{{ task.id }}" onchange="this.form.submit()"/>
+                <label for="task{{ task.id }}">{{ task.task }}</label>
+              </form>
+              <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
+                <i class="fa-solid fa-circle-info"></i>
+              </button>
+            </li>
+          {% endfor %}
+        {% else %}
+          <li>No pending tasks</li>
+        {% endif %}
+      </ul>
+    </section>
 
+    <!-- Completed Tasks -->
     <section>
-  <h2>Completed Tasks</h2>
-  <ul class="todo-list">
-    {% if completed_tasks %}
-      {% for task in completed_tasks %}
-        <li class="todo-item completed">
-          <form method="POST" action="{{ url_for('reopen_task', task_id=task.id) }}">
-            <input type="checkbox" id="task{{ task.id }}" checked onchange="this.form.submit()"/>
-            <label for="task{{ task.id }}">
-              {{ task.task }}
-              <span class="timestamp">Completed at {{ task.completed_at }}</span>
-            </label>
-          </form>
-          <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
-            <i class="fa-solid fa-circle-info"></i>
-          </button>
-        </li>
-      {% endfor %}
-    {% else %}
-      <li>No completed tasks</li>
-    {% endif %}
-  </ul>
-</section>
+      <h2>Completed Tasks</h2>
+      <ul class="todo-list">
+        {% if completed_tasks %}
+          {% for task in completed_tasks %}
+            <li class="todo-item completed">
+              <form method="POST" action="{{ url_for('reopen_task', task_id=task.id) }}">
+                <input type="checkbox" id="task{{ task.id }}" checked onchange="this.form.submit()"/>
+                <label for="task{{ task.id }}">
+                  {{ task.task }}
+                  <span class="timestamp">Completed at {{ task.completed_at }}</span>
+                </label>
+              </form>
+              <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
+                <i class="fa-solid fa-circle-info"></i>
+              </button>
+            </li>
+          {% endfor %}
+        {% else %}
+          <li>No completed tasks</li>
+        {% endif %}
+      </ul>
+    </section>
   </main>
+
+  <!-- Reminder + Alarm Script -->
+  <script>
+    // Ask for notification permission
+    if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+      Notification.requestPermission();
+    }
+
+    function scheduleAlarm(text, dueTime) {
+      const alarm = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+      alarm.volume = 1;
+
+      const delay = new Date(dueTime).getTime() - Date.now();
+      if (delay > 0) {
+        setTimeout(() => {
+          alarm.play();
+          if (Notification.permission === 'granted') {
+            new Notification("⏰ Task Reminder", { body: text });
+          } else {
+            alert(`Reminder: ${text}`);
+          }
+        }, delay);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".todo-item").forEach(item => {
+        const text = item.getAttribute("data-task");
+        const reminder = item.getAttribute("data-reminder");
+        if (reminder) {
+          scheduleAlarm(text, reminder);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
