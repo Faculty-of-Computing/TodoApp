@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Todo App - Welcome</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
   <style>
     /* Importing the chosen font family */
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -230,7 +232,7 @@ main {
 /* 🔹 Mobile-specific full background image */
 @media (max-width: 768px) {
   body {
-    background-image: url("{{ url_for('static', filename='images/u.png') }}") !important;
+    background-image: url("{{ url_for('static', filename='images/ui.png') }}") !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-size: cover;          
@@ -244,7 +246,7 @@ main {
 
 @media (max-width: 480px) {
   body {
-    background-image: url("{{ url_for('static', filename='images/u.png') }}") !important;
+    background-image: url("{{ url_for('static', filename='images/ui.png') }}") !important;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -350,4 +352,5 @@ h2:hover {
   
 </body>
 </html>
+
 
