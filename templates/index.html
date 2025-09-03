@@ -192,6 +192,7 @@ input[type="password"]:focus {
   <main role="main">
     <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
     <h1>DO IT</h1>
+    {% if error_text %}<p style="color:red;">{{ error_text }}</p>{% endif %}
     <p>Let’s organize your day together</p>
     <form id="usernameForm" method="post" aria-label="Username Form">
 
@@ -203,13 +204,14 @@ input[type="password"]:focus {
         <label for="password">Enter your password:</label>
         <input type="password"  id="password" name="password"  placeholder="*******"  aria-describedby="passwordError" required/>
    
-    <p>Don't have an account? 
-        <a href ="/create-account">Sign up here</a>
-    </p>
   
   </div>
       <button type="submit">Get Started</button>
     </form>
+
+    <p>Don't have an account? 
+        <a href ="/create-account">Sign up here</a>
+    </p>
 
   </main>
 
