@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash, url_for
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -122,25 +122,32 @@ def update_task(task_id):
 @app.route("/", methods=['GET', 'POST'])
 def homepage():
     error_text = ""
+    user = get_user()
 
     if request.method == "POST":
         username = request.form.get("username", None)
         password = request.form.get("password", None)
 
-        if username:
-            user = User.query.filter_by(username=username, password=password).first()
-            if not user:
-                return redirect("/create-account")
-            
-            session['username'] = user.username
-            
-        else:
-            error_text = "Username not present"
-            return redirect("/")
+        if not username or not password:
+            error_text = "Username or password cannot be empty"
 
-    user = get_user()
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            flash("User with username does not exist!", "error")
+            return redirect(url_for("create_account")) # Return redirect with context
+        
+        if user.password != password:
+            error_text = "Username or password is not correct"
+
+        if error_text != "":
+            return render_template("index.html", error_text=error_text)
+        
+        # Login in the user
+        session['username'] = user.username
+
+
     if not user:
-        error_text = "User not found"
+        error_text = "You must be logged in to continue"
         return render_template("index.html", error_text=error_text)
 
     # --- SEARCH & FILTER ---

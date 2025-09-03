@@ -34,22 +34,20 @@
   -webkit-backdrop-filter: blur(3px);
 }
 
-        main {
-      background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
-      backdrop-filter: blur(3px);           /* reduce blur */
-      -webkit-backdrop-filter: blur(3px);   /* Safari support */
+main {
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
       padding: 2rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       margin: 2rem auto;
       overflow: hidden;
       width: 100%;
-      max-width: 800px;
+      max-width: 680px;
       border-radius: 30px;
-      box-sizing: border-box;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255,255,255,0.2);
       position: relative;
+      background-color: white;
     }
-
 
 
     h1 {
@@ -168,42 +166,51 @@
 
       .filter-wrapper select {margin-bottom: 0.1rem; padding: 0.4rem 0.6rem; font-size: 0.9rem; border-radius: 6px; border: 1px solid #E0E0E0; max-width: 150px; cursor: pointer;}
 
-        /* header-top wraps username and icon */
-.header-top {
-  display: flex;
-  justify-content: space-between; /* username left, icon right */
-  align-items: center;            /* vertical alignment */
-  width: 100%;
-  margin-bottom: 1rem;
-}
+        .login-icon {
+      position: absolute;
+      top: 1rem;   
+      right: 1rem; 
+      width: 20%;  
+      height: auto;
+      z-index: 100; 
+    }
 
-.login-icon {
-  top: 1rem;
-  width: 350px; 
-  max-width: 30%;  
-  height: auto;
-  z-index: 10;
-}
+    .logout-btn {
+      background-color: #ff4d4d;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 24px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
 
-/* Medium screens */
-@media (max-width: 768px) {
-  .login-icon {
-    width: 200px;
-  }
-}
+    .logout-btn:hover {
+      background-color: #cc0000;
+    }
 
-/* Small screens */
-@media (max-width: 480px) {
-  .login-icon {
-    width: 100px;   /* still big enough but fits small screens */
-  }
-}
+    @media (max-width: 768px) {
+      .logout-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+      }
+    }
 
+    @media (max-width: 600px) {
+      .logout-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+      }
+    }
   
 /* RESPONSIVENESS */ 
    /* Mobile-first adjustments */
 @media (max-width: 768px) {
-      main { padding: 1.5rem; border-radius: 20px; max-width: 100%; }
+      main { padding: 1.5rem; border-radius: 20px; max-width: 80%; }
       .login-icon { width: 20%; }
     }
 
@@ -267,7 +274,7 @@
     background-repeat: no-repeat;    
     background-attachment: fixed;   
     min-height: 115vh;               
-    width: 100%;                   
+    width: 95%;                   
   }
 }
 
@@ -278,7 +285,7 @@
     background-position: center;
     background-repeat: no-repeat;
     min-height: 115vh;
-    width: 100%;
+    width: 95%;
   }
 }
 
@@ -298,21 +305,17 @@ h2:hover {
 </head>
 <body>
   <main>
-    <header class="todo-header">
-       <div class="header-top">
-    <h1>Welcome, {{ session.username }}</h1>
-    <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
-       </div>
+      <header class="todo-header">
+      <h1>Welcome, {{ session.username }}</h1>
+      
       <!-- Search bar below username -->
       <form method="GET" action="/" class="search-bar">
    <i class="fas fa-search search-icon"></i>
     <input type="text" name="search" placeholder="Search tasks..." value="{{ request.args.get('search', '') }}"/>
    </form>
 
-
-      
-<div class="filter-wrapper">
-
+      <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
+      <div class="filter-wrapper">
   <form method="GET" action="/">
     <select name="filter" onchange="this.form.submit()">
       <option value="">-- Filter Tasks --</option>
@@ -324,6 +327,10 @@ h2:hover {
     </select>
   </form>
 </div>
+    <a href="{{ url_for('logout') }}" class="logout-btn" aria-label="Logout">
+      <i class="fa-solid fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
     </header>
 
    <div class="add-task-wrapper">
@@ -381,5 +388,3 @@ h2:hover {
   
 </body>
 </html>
-
-

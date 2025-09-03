@@ -188,12 +188,21 @@ input[type="password"]:focus {
   <main role="main">
     <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
     <h1>DO IT</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <p {% if category=="error" %}style="color: red"{% endif %}>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
     <p>Let’s organize your day together</p>
 
     <form id="usernameForm" method="post" aria-label="Username Form">
       <div class="form-group">
         <!--added the link to the home page in line 155-->
-        <label for="fullname">Enter your fullname:</label>
+
+        <label for="fullname">Enter your full name:</label>
         <input type="text" id="username" name="fullname" placeholder="John Doe" />
 
         <label for="username">Enter your userId:</label>
@@ -204,6 +213,11 @@ input[type="password"]:focus {
       </div>
       <button type="submit">Sign up</button>
     </form>
+
+      <p>Have an account? 
+        <a href ="/">Sign in here</a>
+    </p>
+
 
   </main>
 </body>
