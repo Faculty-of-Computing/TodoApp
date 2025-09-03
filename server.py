@@ -22,6 +22,7 @@ app.secret_key = 'your-secret-key'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+
 class TaskPriority(Enum):
     LOW = "low"
     MEDIUM = "medium"
@@ -29,10 +30,11 @@ class TaskPriority(Enum):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
 
-    
     tasks = db.relationship('Task', backref='user', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
@@ -66,10 +68,12 @@ def generate_unique_username(base_username):
         username = f"{base_username}{suffix}"
     return username
 
+
 def get_user():
     if "username" in session:
         return User.query.filter_by(username=session["username"]).first()
     return None
+
 
 @app.route("/add")
 def add_page():
@@ -83,6 +87,7 @@ def add_page():
         task = Task.query.filter_by(id=task_id, user_id=user.id).first()
 
     return render_template("add.html", task=task)
+
 
 @app.route("/tasks/<int:task_id>/update", methods=["POST"])
 def update_task(task_id):
@@ -120,15 +125,18 @@ def homepage():
 
     if request.method == "POST":
         username = request.form.get("username", None)
+        password = request.form.get("password", None)
+
         if username:
-            user = User.query.filter_by(username=username).first()
+            user = User.query.filter_by(username=username, password=password).first()
             if not user:
-                user = User(username=username)
-                db.session.add(user)
-                db.session.commit()
-            session["username"] = username
+                return redirect("/create-account")
+            
+            session['username'] = user.username
+            
         else:
             error_text = "Username not present"
+            return redirect("/")
 
     user = get_user()
     if not user:
@@ -162,11 +170,40 @@ def homepage():
 
     return render_template("home.html", pending_tasks=pending_tasks, completed_tasks=completed_tasks)
 
+
+@app.route("/create-account", methods=['GET', 'POST'])
+def create_account():
+    if request.method == "POST":
+        name = request.form.get('fullname')
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        user = User()
+        user.name = name
+        user.username = username
+        user.password = password
+
+        db.session.add(user)
+        db.session.commit()
+
+        session['username'] = username
+
+        return redirect("/")
+    
+    return render_template("create_account.html")
+
+
 @app.route("/logout")
 def logout():
-    session.pop("username")
+    try:
+        session.pop("username")
 
-    return redirect("/")
+    except Exception as e:
+        print(f"Error during logout: {e}")
+
+    finally:
+        return redirect("/")
+
 
 @app.route("/tasks/new", methods=["POST"])
 def create_task():
@@ -204,6 +241,7 @@ def create_task():
 
     return redirect("/")
 
+
 @app.route("/tasks/<int:task_id>/complete", methods=["POST"])
 def complete_task(task_id):
     if user := get_user():
@@ -213,6 +251,7 @@ def complete_task(task_id):
             db.session.commit()
 
     return redirect("/")
+
 
 @app.route("/tasks/<int:task_id>/delete", methods=["POST"])
 def delete_task(task_id):
@@ -224,6 +263,7 @@ def delete_task(task_id):
 
     return redirect("/")
 
+
 @app.route("/tasks/<int:task_id>/reopen", methods=["POST"])
 def reopen_task(task_id):
     if user := get_user():
@@ -233,6 +273,7 @@ def reopen_task(task_id):
             db.session.commit()
 
     return redirect("/")
+
 
 @app.route("/tasks/clear/", methods=["POST"])
 def clear_completed_tasks():
@@ -244,7 +285,7 @@ def clear_completed_tasks():
 
     return redirect("/")
 
+
 if __name__ == "__main__":
     app.run(debug=True)
-
 

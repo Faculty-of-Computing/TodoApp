@@ -25,6 +25,9 @@
   align-items: center;
   min-height: 115vh;
   padding: 1rem;
+        backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+
 }
 
     .login-icon {
@@ -192,16 +195,16 @@ input[type="password"]:focus {
     <p>Let’s organize your day together</p>
     <form id="usernameForm" method="post" aria-label="Username Form">
 
-      <div class="form-group" onsubmit="event.preventDefault(); window.location.href='add.html';">
+      <div class="form-group">
         <!--added the link to the home page in line 155-->
         <label for="username">Enter your username:</label>
-        <input type="text" id="username" name="username" placeholder="johndoe" aria-describedby="usernameError" />
-        <div id="usernameError" class="error-message">Username cannot be empty</div>
-    <label for="password">Enter your password:</label>
-    <input type="password"  id="password" name="password"  placeholder="*******"  aria-describedby="passwordError" required/>
+        <input type="text" id="username" name="username" placeholder="johndoe" required/>
+
+        <label for="password">Enter your password:</label>
+        <input type="password"  id="password" name="password"  placeholder="*******"  aria-describedby="passwordError" required/>
    
     <p>Don't have an account? 
-        <a href ="create_account.html">Sign up here</a>
+        <a href ="/create-account">Sign up here</a>
     </p>
   
   </div>
@@ -210,42 +213,5 @@ input[type="password"]:focus {
 
   </main>
 
-  <script>
-    const form = document.getElementById('usernameForm');
-    const usernameInput = document.getElementById('username');
-    const errorMessage = document.getElementById('usernameError');
-
-    function validateUsername() {
-      const username = usernameInput.value.trim();
-      if (username === '') {
-        usernameInput.classList.add('error');
-        errorMessage.style.display = 'block';
-        return false;
-      } else {
-        usernameInput.classList.remove('error');
-        errorMessage.style.display = 'none';
-        return true;
-      }
-    }
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (validateUsername()) {
-        
-        console.log('Username submitted:', usernameInput.value.trim());
-      }
-
-      form.submit();
-    });
-
-    usernameInput.addEventListener('input', validateUsername);
-
-    window.addEventListener('load', () => {
-      if (usernameInput.value.trim() !== '') {
-        usernameInput.classList.remove('error');
-        errorMessage.style.display = 'none';
-      }
-    });
-  </script>
 </body>
 </html>

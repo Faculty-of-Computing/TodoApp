@@ -30,10 +30,11 @@
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;   /* ensures full coverage */
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 main {
-      background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
       backdrop-filter: blur(3px);
       -webkit-backdrop-filter: blur(3px);
       padding: 2rem;
@@ -45,6 +46,7 @@ main {
       border-radius: 30px;
       border: 1px solid rgba(255,255,255,0.2);
       position: relative;
+      background-color: white;
     }
 
 
