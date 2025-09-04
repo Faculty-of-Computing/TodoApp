@@ -30,8 +30,8 @@
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;   /* ensures full coverage */
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 main {
@@ -47,6 +47,7 @@ main {
       border: 1px solid rgba(255,255,255,0.2);
       position: relative;
       background-color: white;
+      background: url("{{ url_for('static', filename='images/it.webp') }}") no-repeat center center/cover;
     }
 
 
@@ -166,14 +167,6 @@ main {
 
       .filter-wrapper select {margin-bottom: 0.1rem; padding: 0.4rem 0.6rem; font-size: 0.9rem; border-radius: 6px; border: 1px solid #E0E0E0; max-width: 150px; cursor: pointer;}
 
-        .login-icon {
-      position: absolute;
-      top: 1rem;   
-      right: 1rem; 
-      width: 20%;  
-      height: auto;
-      z-index: 100; 
-    }
 
     .logout-btn {
       background-color: #ff4d4d;
@@ -206,6 +199,20 @@ main {
         font-size: 0.75rem;
       }
     }
+
+    /* Shake animation for alarm popup */
+@keyframes shake {
+  0% { transform: translate(0px, 0px); }
+  20% { transform: translate(-2px, 0px); }
+  40% { transform: translate(2px, 0px); }
+  60% { transform: translate(-2px, 0px); }
+  80% { transform: translate(2px, 0px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+.alarm-shake {
+  animation: shake 0.5s infinite;
+}
   
 /* RESPONSIVENESS */ 
    /* Mobile-first adjustments */
@@ -300,21 +307,54 @@ h2 {
 h2:hover {
   color: #4A90E2; /* Accent blue on hover */
 }
+.header-top {
+  display: flex;
+  justify-content: space-between; /* username left, icon right */
+  align-items: center;            /* vertical alignment */
+  width: 100%;
+  margin-bottom: 1rem;
+}
+        .login-icon {
+            top: 2rem;   
+            right: 1.5rem; 
+            width: 30%;  
+            height: auto; 
+            flex-shrink: 0; 
+            z-index: 10; 
+          }
+            @media (max-width: 768px) {
+          .login-icon {
+            width: 100px;  /* slightly smaller on tablets */
+          }
+        }
+
+        /* Small screens */
+        @media (max-width: 480px) {
+          .login-icon {
+            width: 80px;   /* small but still visible on phones */
+          }
+        }
+
+
+/* Reminder */ 
+.timestamp i.fa-bell { color: #FFB000; margin-right: 4px; font-size: 0.8rem; vertical-align: middle; } 
+.timestamp.upcoming { color: #FF4D4D; /* red for upcoming */ font-weight: 600; }
 
   </style>
 </head>
-<body>
+<body data-home-url="{{ url_for('homepage') }}">
   <main>
       <header class="todo-header">
-      <h1>Welcome, {{ session.username }}</h1>
-      
+  <div class="header-top">
+    <h1>Welcome, {{ session.username }}</h1>
+    <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
+  </div>
+
       <!-- Search bar below username -->
-      <form method="GET" action="/" class="search-bar">
+    <form method="GET" action="/" class="search-bar">
    <i class="fas fa-search search-icon"></i>
     <input type="text" name="search" placeholder="Search tasks..." value="{{ request.args.get('search', '') }}"/>
    </form>
-
-      <img src="{{ url_for('static', filename='images/do.png') }}" alt="To-Do Icon" class="login-icon" />
       <div class="filter-wrapper">
   <form method="GET" action="/">
     <select name="filter" onchange="this.form.submit()">
@@ -340,7 +380,7 @@ h2:hover {
       </a>
     </div>
 
-    <section>
+<section>
   <h2>Pending Tasks</h2>
   <ul class="todo-list">
     {% if pending_tasks %}
@@ -348,7 +388,17 @@ h2:hover {
         <li class="todo-item">
           <form method="POST" action="{{ url_for('complete_task', task_id=task.id) }}">
             <input type="checkbox" id="task{{ task.id }}" onchange="this.form.submit()"/>
-            <label for="task{{ task.id }}">{{ task.task }}</label>
+            <label for="task{{ task.id }}">
+              {{ task.task }}
+              <div class="timestamp" style="margin-top: 4px; font-size: 0.85rem; color: #555;">
+                {% if task.reminder_datetime %}
+                  <i class="fa-solid fa-bell" style="color:#FFB000;"></i>
+                  {{ task.reminder_datetime.strftime('Date: %d-%m-%Y, Time: %H:%M') }}
+                {% else %}
+                  {{ task.due_date.strftime('Date: %d-%m-%Y, Time: %H:%M') if task.due_date else 'No date set' }}
+                {% endif %}
+              </div>
+            </label>
           </form>
           <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
             <i class="fa-solid fa-circle-info"></i>
@@ -361,7 +411,7 @@ h2:hover {
   </ul>
 </section>
 
-    <section>
+<section>
   <h2>Completed Tasks</h2>
   <ul class="todo-list">
     {% if completed_tasks %}
@@ -371,7 +421,9 @@ h2:hover {
             <input type="checkbox" id="task{{ task.id }}" checked onchange="this.form.submit()"/>
             <label for="task{{ task.id }}">
               {{ task.task }}
-              <span class="timestamp">Completed at {{ task.completed_at }}</span>
+              <div class="timestamp" style="margin-top: 4px; font-size: 0.85rem; color: #888;">
+                Completed at Date: {{ task.completed_at.strftime('%d-%m-%Y') }}, Time: {{ task.completed_at.strftime('%H:%M') }}
+              </div>
             </label>
           </form>
           <button class="info-btn" onclick="location.href='{{ url_for('add_page') }}?task_id={{ task.id }}'">
@@ -384,7 +436,202 @@ h2:hover {
     {% endif %}
   </ul>
 </section>
-  </main>
-  
+
+
+</main>
+
+<div id="reminder-popup" style="display:none; position:fixed; bottom:20px; right:20px; 
+     background:#fff; border:2px solid #2B49F3; border-radius:12px; padding:1rem 1.5rem; 
+     box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:10000; width:280px;">
+    <div id="reminder-text" style="font-weight:600; margin-bottom:0.5rem;"></div>
+    <div style="display:flex; justify-content:space-between; gap:0.5rem;">
+        <button id="snooze-btn" style="flex:1; padding:0.5rem; background:#FFD166; border:none; border-radius:8px; cursor:pointer;">Snooze 5 min</button>
+        <button id="stop-btn" style="flex:1; padding:0.5rem; background:#EF476F; border:none; border-radius:8px; cursor:pointer; color:white;">Stop</button>
+    </div>
+</div>
+
+
+
+<script>
+// ==========================================
+// Browser Reminder + Alarm + Draggable Popup + Snooze + Stop + Shake Animation
+// ==========================================
+const triggeredTasks = new Map();
+const activeAlarms = new Map();
+
+async function checkPendingReminders() {
+    try {
+        const response = await fetch("/api/pending_reminders");
+        const data = await response.json();
+        const tasks = data.tasks || [];
+        const now = new Date();
+
+        tasks.forEach(task => {
+            if (!task.reminder_datetime || triggeredTasks.has(task.id)) return;
+
+            const reminderTime = new Date(task.reminder_datetime);
+            const delay = reminderTime.getTime() - now.getTime();
+
+            if (delay > 0) {
+                const timeoutId = setTimeout(() => showAlarm(task), delay);
+                triggeredTasks.set(task.id, timeoutId);
+            }
+        });
+    } catch (err) {
+        console.error("Error fetching reminders:", err);
+    }
+}
+
+function showAlarm(task) {
+    // Play alarm sound continuously
+    const alarm = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+    alarm.loop = true;
+    alarm.volume = 1;
+    alarm.play();
+    activeAlarms.set(task.id, alarm);
+
+    // Create in-page draggable popup with shake
+    createAlarmPopup(task);
+}
+
+function createAlarmPopup(task) {
+    const existing = document.getElementById(`alarm-popup-${task.id}`);
+    if (existing) existing.remove();
+
+    const popup = document.createElement("div");
+    popup.id = `alarm-popup-${task.id}`;
+    popup.classList.add("alarm-shake"); 
+    popup.style.position = "fixed";
+    popup.style.maxWidth = "300px";
+    popup.style.left = "50%";               
+    popup.style.transform = "translateX(-50%)"; 
+    popup.style.background = "#fff";
+    popup.style.padding = "1rem 1.5rem";
+    popup.style.borderRadius = "12px";
+    popup.style.boxShadow = "0 4px 12px rgba(0,0,0,0.25)";
+    popup.style.zIndex = 9999;
+    popup.style.minWidth = "250px";
+    popup.style.fontFamily = "'Poppins', sans-serif";
+    popup.style.color = "#333";
+    popup.style.display = "flex";
+    popup.style.flexDirection = "column";
+    popup.style.gap = "0.5rem";
+    popup.style.cursor = "move";
+
+    const title = document.createElement("div");
+    title.textContent = `⏰ Reminder: ${task.title}`;
+    title.style.fontWeight = "600";
+    popup.appendChild(title);
+
+    const btnContainer = document.createElement("div");
+    btnContainer.style.display = "flex";
+    btnContainer.style.justifyContent = "space-between";
+    btnContainer.style.gap = "0.5rem";
+
+    const snoozeBtn = document.createElement("button");
+    snoozeBtn.textContent = "Snooze 5 min";
+    styleButton(snoozeBtn, "#FFB000");
+    snoozeBtn.onclick = () => {
+        snoozeTask(task.id);
+        popup.remove();
+    };
+
+    const stopBtn = document.createElement("button");
+    stopBtn.textContent = "Stop";
+    styleButton(stopBtn, "#FF4D4D");
+    stopBtn.onclick = () => {
+        stopAlarm(task.id);
+        popup.remove();
+    };
+
+    btnContainer.appendChild(snoozeBtn);
+    btnContainer.appendChild(stopBtn);
+    popup.appendChild(btnContainer);
+
+    document.body.appendChild(popup);
+
+    makeDraggable(popup);
+}
+
+function styleButton(btn, color) {
+    btn.style.flex = "1";
+    btn.style.padding = "0.5rem";
+    btn.style.border = "none";
+    btn.style.borderRadius = "8px";
+    btn.style.background = color;
+    btn.style.color = "#fff";
+    btn.style.cursor = "pointer";
+}
+
+function makeDraggable(element) {
+    let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
+    element.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+        e.preventDefault();
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e.preventDefault();
+        offsetX = mouseX - e.clientX;
+        offsetY = mouseY - e.clientY;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        element.style.top = (element.offsetTop - offsetY) + "px";
+        element.style.left = (element.offsetLeft - offsetX) + "px";
+        element.style.bottom = "auto";
+        element.style.right = "auto";
+    }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+function stopAlarm(taskId) {
+    if (activeAlarms.has(taskId)) {
+        const alarm = activeAlarms.get(taskId);
+        alarm.pause();
+        alarm.currentTime = 0;
+        activeAlarms.delete(taskId);
+    }
+    triggeredTasks.delete(taskId);
+    const popup = document.getElementById(`alarm-popup-${taskId}`);
+    if (popup) popup.remove();
+}
+
+async function snoozeTask(taskId) {
+    try {
+        const response = await fetch(`/snooze/${taskId}`, { method: "POST" });
+        const data = await response.json();
+        if (data.success) {
+            console.log(`Task ${taskId} snoozed for 5 minutes`);
+            stopAlarm(taskId);
+
+            const timeoutId = setTimeout(async () => {
+                const taskRes = await fetch("/api/pending_reminders");
+                const tasksData = await taskRes.json();
+                const task = tasksData.tasks.find(t => t.id === taskId);
+                if (task) showAlarm(task);
+            }, 5 * 60 * 1000);
+
+            triggeredTasks.set(taskId, timeoutId);
+        }
+    } catch (err) {
+        console.error("Error snoozing task:", err);
+    }
+}
+
+checkPendingReminders();
+setInterval(checkPendingReminders, 30000);
+</script>
+
+
+
 </body>
 </html>
