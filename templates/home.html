@@ -30,8 +30,8 @@
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;   /* ensures full coverage */
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
 }
 
 main {
@@ -42,7 +42,8 @@ main {
       margin: 2rem auto;
       overflow: hidden;
       width: 100%;
-      max-width: 680px;
+      max-width: 880px;
+      background-size: cover; 
       border-radius: 30px;
       border: 1px solid rgba(255,255,255,0.2);
       position: relative;
@@ -216,6 +217,10 @@ main {
   
 /* RESPONSIVENESS */ 
    /* Mobile-first adjustments */
+@media (max-width: 1068px) {
+      main { padding: 1.5rem; border-radius: 20px; max-width: 100%; }
+      .login-icon { width: 20%; }
+    }
 @media (max-width: 768px) {
       main { padding: 1.5rem; border-radius: 20px; max-width: 80%; }
       .login-icon { width: 20%; }
@@ -246,17 +251,41 @@ main {
 }
 
   /* Mobile responsiveness */
+@media (max-width: 768px) {
+  body {
+    background-image: url("{{ url_for('static', filename='images/ui.png') }}") !important;
+    background-size: cover;          
+    background-position: center;   
+    background-repeat: no-repeat;   
+    background-attachment: fixed;    
+    min-height: 100vh;               
+    width: 100%;                     
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    background-image: url("{{ url_for('static', filename='images/ui.png') }}") !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 115vh;
+    width: 100%;
+  }
+}
+
+
 @media (max-width: 1024px) {
   body {
-    background-size: auto 100%;   
-    background-position: center; 
+    background-size: auto cover;  
+    background-position: cente; 
     background-repeat: no-repeat;
   }
 }
 
 @media (max-width: 768px) {
   body {
-    background-size: auto 100%;      
+    background-size: auto cover;      /* full height, width adjusts */
     background-position: center;
     background-repeat: no-repeat;
   }
@@ -270,29 +299,9 @@ main {
   }
 }
 
-/* 🔹 Mobile-specific full background image */
-@media (max-width: 768px) {
-  body {
-    background-image: url("{{ url_for('static', filename='images/ui.png') }}") !important;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    background-size: cover;          
-    background-position: center;     
-    background-repeat: no-repeat;    
-    background-attachment: fixed;   
-    min-height: 115vh;               
-    width: 95%;                   
-  }
-}
-
 @media (max-width: 480px) {
-  body {
-    background-image: url("{{ url_for('static', filename='images/ui.png') }}") !important;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 115vh;
-    width: 95%;
+  .delete-btn {
+    margin-right: 30px;
   }
 }
 
@@ -322,6 +331,10 @@ h2:hover {
             flex-shrink: 0; 
             z-index: 10; 
           }
+
+  @media (max-width: 768px) { 
+    main { padding: 1.5rem; border-radius: 20px; max-width: 100%; }
+           }
             @media (max-width: 768px) {
           .login-icon {
             width: 100px;  /* slightly smaller on tablets */
@@ -483,16 +496,25 @@ async function checkPendingReminders() {
 }
 
 function showAlarm(task) {
-    // Play alarm sound continuously
-    const alarm = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+    const sounds = {
+        classic: "/static/sounds/classic.mp3",
+        digital: "/static/sounds/beep.mp3",
+        phone: "/static/sounds/call_ringtone.mp3",
+        rooster: "/static/sounds/Rooster.wav"
+    };
+
+    const soundURL = sounds[task.alarm_sound?.toLowerCase()] || sounds.classic;
+
+    const alarm = new Audio(soundURL);
     alarm.loop = true;
     alarm.volume = 1;
-    alarm.play();
-    activeAlarms.set(task.id, alarm);
+    alarm.play().catch(err => console.warn("Autoplay prevented:", err));
 
-    // Create in-page draggable popup with shake
+    activeAlarms.set(task.id, alarm);
     createAlarmPopup(task);
 }
+
+
 
 function createAlarmPopup(task) {
     const existing = document.getElementById(`alarm-popup-${task.id}`);
@@ -503,7 +525,9 @@ function createAlarmPopup(task) {
     popup.classList.add("alarm-shake"); 
     popup.style.position = "fixed";
     popup.style.maxWidth = "300px";
-    popup.style.left = "50%";               
+    popup.style.top = "40px";  
+    popup.style.left = "50%";  
+    popup.style.right = "50%";             
     popup.style.transform = "translateX(-50%)"; 
     popup.style.background = "#fff";
     popup.style.padding = "1rem 1.5rem";
@@ -517,6 +541,8 @@ function createAlarmPopup(task) {
     popup.style.flexDirection = "column";
     popup.style.gap = "0.5rem";
     popup.style.cursor = "move";
+    popup.style.top = `${20 + 70 * triggeredTasks.size}px`;
+
 
     const title = document.createElement("div");
     title.textContent = `⏰ Reminder: ${task.title}`;
@@ -629,6 +655,7 @@ async function snoozeTask(taskId) {
 
 checkPendingReminders();
 setInterval(checkPendingReminders, 30000);
+
 </script>
 
 

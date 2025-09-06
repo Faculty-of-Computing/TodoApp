@@ -44,19 +44,27 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
 
+class RecurrenceEnum(Enum):
+    none = "none"
+    daily = "daily"
+    weekly = "weekly"
+    monthly = "monthly"
+
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(255), nullable=False)
     priority = db.Column(db.Enum(TaskPriority), default=TaskPriority.MEDIUM, nullable=False)
     tags = db.Column(db.String(500))
-
     created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     last_updated = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     due_date = db.Column(db.DateTime)
-    reminder_datetime = db.Column(db.DateTime)  # <-- ADD THIS
+    reminder_datetime = db.Column(db.DateTime) 
     completed_at = db.Column(db.DateTime)
     dismissed = db.Column(db.Boolean, default=False)
-
+    alarm_sound = db.Column(db.String(50), default='classic') 
+    
+    recurring = db.Column(db.Enum(RecurrenceEnum), default=RecurrenceEnum.none)
+    
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
@@ -80,6 +88,33 @@ def get_user():
         return User.query.filter_by(username=session["username"]).first()
     return None
 
+# --- after your model definitions ---
+
+def create_recurring_tasks(task, occurrences=5):
+    next_due_date = task.due_date
+    for _ in range(occurrences):
+        if task.recurring == RecurrenceEnum.daily:
+            next_due_date += timedelta(days=1)
+        elif task.recurring == RecurrenceEnum.weekly:
+            next_due_date += timedelta(weeks=1)
+        elif task.recurring == RecurrenceEnum.monthly:
+            next_due_date += timedelta(days=30)
+        else:
+            break
+
+        new_task = Task(
+            task=task.task,
+            due_date=next_due_date,
+            reminder_datetime=task.reminder_datetime,
+            dismissed=True,
+            user_id=task.user_id,
+            priority=task.priority,
+            tags=task.tags,
+            recurring=task.recurring,
+            alarm_sound=alarm_sound
+        )
+        db.session.add(new_task)
+    db.session.commit()
 
 @app.route("/add")
 def add_page():
@@ -106,6 +141,9 @@ def update_task(task_id):
         task.tags = request.form.get("tags")
         priority = request.form.get("priority")
         task.priority = TaskPriority(priority) if priority else TaskPriority.MEDIUM
+        task.recurring = RecurrenceEnum(request.form.get("recurring", "none"))
+        task.alarm_sound = request.form.get("alarm_sound", "classic")
+
 
         # Due date
         date_due = request.form.get("date_due")
@@ -214,6 +252,7 @@ def api_pending_reminders():
             {
                 "id": task.id,
                 "title": task.task,
+                "alarm_sound": task.alarm_sound,
                 "reminder_datetime": task.reminder_datetime.isoformat() if task.reminder_datetime else None
             }
             for task in tasks if task.reminder_datetime
@@ -291,6 +330,8 @@ def homepage():
 
 
 
+from werkzeug.security import generate_password_hash
+
 @app.route("/create-account", methods=['GET', 'POST'])
 def create_account():
     if request.method == "POST":
@@ -298,18 +339,25 @@ def create_account():
         username = request.form.get('username')
         password = request.form.get('password')
 
+        # Check if username already exists
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            flash("Username already taken. Please choose another.", "error")
+            return redirect("/create-account")  # Redirect back to the form
+
+        # Create user with hashed password
         user = User()
         user.name = name
         user.username = username
-        user.password = password
+        user.password = generate_password_hash(password)  # Always hash passwords!
 
         db.session.add(user)
         db.session.commit()
 
         session['username'] = username
-
+        flash("Account created successfully!", "success")
         return redirect("/")
-    
+
     return render_template("create_account.html")
 
 
@@ -334,13 +382,15 @@ def create_task():
         priority = request.form.get("priority")
         tags = request.form.get("tags")
         reminder = request.form.get("reminder_datetime")
+        recurring = request.form.get("recurring", "none")  
+        alarm_sound = request.form.get("alarm_sound", "classic")
 
         # Combine date and time
         due_datetime = None
         if date_due:
             try:
                 if time_due:
-                    due_datetime = datetime.strptime(f"{date_due} {time_due}", "%Y-%m-%d %H:%M")
+                    due_datetime = datetime.strptime(f"{date_due} {time_due}", "Date:%Y-%m-%d, Time:%H:%M")
                 else:
                     due_datetime = datetime.strptime(date_due, "%Y-%m-%d")
             except ValueError:
@@ -351,7 +401,7 @@ def create_task():
         dismissed = True
         if reminder:
             try:
-                reminder_datetime = datetime.strptime(reminder, "%Y-%m-%dT%H:%M")
+                reminder_datetime = datetime.strptime(reminder, "Date: %Y-%m-%d, Time: %H:%M")
                 dismissed = False
             except ValueError:
                 reminder_datetime = None
@@ -365,13 +415,18 @@ def create_task():
                 dismissed=dismissed,
                 user_id=user.id,
                 priority=TaskPriority(priority) if priority else TaskPriority.MEDIUM,
-                tags=tags
+                tags=tags,
+                recurring=RecurrenceEnum(recurring),  
+                alarm_sound=alarm_sound
             )
             db.session.add(new_task)
             db.session.commit()
 
-    return redirect("/")
+            # <-- CALL RECURRING TASKS -->
+            if new_task.recurring != RecurrenceEnum.none:
+                create_recurring_tasks(new_task)
 
+        return redirect("/") 
 
 @app.route("/tasks/<int:task_id>/complete", methods=["POST"])
 def complete_task(task_id):
